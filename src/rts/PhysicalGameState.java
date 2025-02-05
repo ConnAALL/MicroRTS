@@ -20,6 +20,7 @@ import com.eclipsesource.json.JsonValue;
 
 import rts.units.Unit;
 import rts.units.UnitTypeTable;
+import rts.units.UnitType;
 import util.XMLWriter;
 
 /**
@@ -38,6 +39,13 @@ public class PhysicalGameState {
      * Indicates a blocked tile
      */
     public static final int TERRAIN_WALL = 1;
+
+
+    // unit and its state is recorded as a three digit number
+    // type
+    // health (1~9)
+    // owner
+
 
     int width = 8;
     int height = 8;
