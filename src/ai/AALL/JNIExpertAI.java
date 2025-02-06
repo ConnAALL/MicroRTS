@@ -118,6 +118,9 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
     
     @Override
     public PlayerAction getAction(final int player, final GameState gs, int[][] action) {
+        System.out.printf("JNIExpertAI::getAction action.length", action.length);
+        System.out.printf("JNIExpertAI::getAction action[0].length", action[0].length);
+        System.out.printf("JNIExpertAI::getAction action[1].length", action[1].length);
 
         //PlayerAction pa = PlayerAction.fromVectorAction(action, gs, utt, player, maxAttackRadius);
         //return pa;
@@ -128,7 +131,6 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         // output tile position (size of board)^2
         // top unittype selection and top 4 tile position selection are chosen
         PhysicalGameState pgs = gs.getPhysicalGameState();
-        
         int[] inputINT = NetworkHelpers.getFlattened(pgs, player);
         double[] input = new double[inputINT.length];
         for (int i = 0; i < inputINT.length; i++) {
