@@ -86,7 +86,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         return logit;
     }
 
-    private int[] multinomial(final float[] logits)
+    private int multinomial(final float[] logits) throws Exception
     {
         Random random = new Random();
         float r = random.nextFloat(); // Random number in [0, 1)
@@ -94,10 +94,10 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         for (int i = 0; i < logits.length; i++) {
             cumulativeSum += logits[i];
             if (r < cumulativeSum) {
-                return new int[] { i };
+                return i;
             }
         }
-        return null;
+        throw new Exception("Probability does not add up to 1");
     }
 
     private int[] multinomial(final float[][] logits)
@@ -117,51 +117,51 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
     }
     
     @Override
-    public PlayerAction getAction(final int player, final GameState gs, int[][] action) {
+    public PlayerAction getAction(final int player, final GameState gs, int[][] action) throws Exception {
         System.out.printf("JNIExpertAI::getAction action.length %d%n", action.length);
         System.out.printf("JNIExpertAI::getAction action[0].length %d%n", action[0].length);
 
-        PlayerAction pa = PlayerAction.fromVectorAction(action, gs, utt, player, maxAttackRadius);
-        pa.fillWithNones(gs, player, 1);
-        return pa;
-
+        // PlayerAction pa = PlayerAction.fromVectorAction(action, gs, utt, player, maxAttackRadius);
+        // pa.fillWithNones(gs, player, 1);
+        // return pa;
+        int[] flatAction = action[0];
         //Input a softmaxed tensor
         // output consists of 
         // output unit type selection (size of unit type count)
         // output tile position (size of board)^2
         // top unittype selection and top 4 tile position selection are chosen
-        // PhysicalGameState pgs = gs.getPhysicalGameState();
-        // int[] inputINT = NetworkHelpers.getFlattened(pgs, player);
-        // double[] input = new double[inputINT.length];
-        // for (int i = 0; i < inputINT.length; i++) {
-        //     input[i] = inputINT[i]; // Cast int to double
-        // }
-        // int[] unitTypeAction = action[0];
-        // int[][] tileAction = Arrays.copyOfRange(action, 1, action.length);
-        // List<UnitType> types = utt.getUnitTypes();
-        // if (unitTypeAction.length == types.size()) { // check if something wrong
-        //     for (Unit u : pgs.getUnits()) {
-        //         if (u.getPlayer() == player && gs.getActionAssignment(u) == null) {//for each friendly unit without action assigned
-        //             // Softmax to select tile policy
-        //             int[] pos = multinomial(softmax(tileAction));
-        //             int x = pos[0];
-        //             int y = pos[1];
-        //             int unitPos = u.getPosition(pgs);
-        //             int ux = unitPos / pgs.getWidth();
-        //             int uy = unitPos % pgs.getHeight();
+        PhysicalGameState pgs = gs.getPhysicalGameState();
+        int[] inputINT = NetworkHelpers.getFlattened(pgs, player);
+        double[] input = new double[inputINT.length];
+        for (int i = 0; i < inputINT.length; i++) {
+            input[i] = inputINT[i]; // Cast int to double
+        }
+        List<UnitType> types = utt.getUnitTypes();
+        int[] unitTypeAction = Arrays.copyOfRange(flatAction, 0, types.size());
+        int[] tileAction = Arrays.copyOfRange(flatAction, types.size(), flatAction.length);
+        if (unitTypeAction.length == types.size()) { // check if something wrong
+            for (Unit u : pgs.getUnits()) {
+                if (u.getPlayer() == player && gs.getActionAssignment(u) == null) {//for each friendly unit without action assigned
+                    // Softmax to select tile policy
+                    int pos = multinomial(softmax(tileAction));
+                    int x = pos / pgs.getWidth();
+                    int y = pos % pgs.getHeight();
+                    int unitPos = u.getPosition(pgs);
+                    int ux = unitPos / pgs.getWidth();
+                    int uy = unitPos % pgs.getHeight();
 
-        //             if (Math.sqrt((float) ((ux - x) ^ 2 + (uy - y) ^ 2)) < maxAttackRadius) // Check if selected tile is close enough to the unit
-        //             {
-        //                 action[x][y] *= 0.7f; //tile policy selected. Reduce it to reduce the probability of it getting reselected
-        //                 UnitType type = types.get(multinomial(softmax(unitTypeAction))[0]);
-        //                 unitAction(player, gs, u, x, y, type);
-        //             }
-        //         }
-        //     }
-        // }
-        // PlayerAction pa =  translateActions(player, gs);
-        // pa.fillWithNones(gs, player, 1);
-        // return pa;
+                    if (Math.sqrt((float) ((ux - x) ^ 2 + (uy - y) ^ 2)) < maxAttackRadius) // Check if selected tile is close enough to the unit
+                    {
+                        action[x][y] *= 0.7f; //tile policy selected. Reduce it to reduce the probability of it getting reselected
+                        UnitType type = types.get(multinomial(softmax(unitTypeAction)));
+                        unitAction(player, gs, u, x, y, type);
+                    }
+                }
+            }
+        }
+        PlayerAction pa =  translateActions(player, gs);
+        pa.fillWithNones(gs, player, 1);
+        return pa;
     }
     
     public void unitAction(int playerID, GameState gs, Unit selectedUnit, int x, int y, UnitType trainType) {
