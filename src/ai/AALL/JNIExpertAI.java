@@ -131,11 +131,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         // output tile position (size of board)^2
         // top unittype selection and top 4 tile position selection are chosen
         PhysicalGameState pgs = gs.getPhysicalGameState();
-        int[] inputINT = NetworkHelpers.getFlattened(pgs, player);
-        double[] input = new double[inputINT.length];
-        for (int i = 0; i < inputINT.length; i++) {
-            input[i] = inputINT[i]; // Cast int to double
-        }
+
         List<UnitType> types = utt.getUnitTypes();
         int[] unitTypeAction = Arrays.copyOfRange(flatAction, 0, types.size());
         int[] tileAction = Arrays.copyOfRange(flatAction, types.size(), flatAction.length);
