@@ -118,8 +118,8 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
     
     @Override
     public PlayerAction getAction(final int player, final GameState gs, int[][] action) throws Exception {
-        System.out.printf("JNIExpertAI::getAction action.length %d%n", action.length);
-        System.out.printf("JNIExpertAI::getAction action[0].length %d%n", action[0].length);
+        //System.out.printf("JNIExpertAI::getAction action.length %d%n", action.length);
+        //System.out.printf("JNIExpertAI::getAction action[0].length %d%n", action[0].length);
 
         // PlayerAction pa = PlayerAction.fromVectorAction(action, gs, utt, player, maxAttackRadius);
         // pa.fillWithNones(gs, player, 1);
@@ -148,10 +148,10 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     
                     if (Math.sqrt((float) ((ux - x) ^ 2 + (uy - y) ^ 2)) < maxAttackRadius) // Check if selected tile is close enough to the unit
                     {
-                        System.out.printf("Unit at %d %d, acting on %d %d %n", ux, uy, x, y);
+                        //System.out.printf("Unit at %d %d, acting on %d %d %n", ux, uy, x, y);
                         flatAction[pos] *= 0.7f; //tile policy selected. Reduce it to reduce the probability of it getting reselected
                         int ut = multinomial(softmax(unitTypeAction));
-                        System.out.printf("Evaluated Unit Type: %d %n", ut);
+                        //System.out.printf("Evaluated Unit Type: %d %n", ut);
                         UnitType type = types.get(ut);
                         unitAction(player, gs, u, x, y, type);
                     }

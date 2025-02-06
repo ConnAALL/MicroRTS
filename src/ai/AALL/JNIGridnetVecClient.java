@@ -269,9 +269,9 @@ public class JNIGridnetVecClient {
         System.out.printf("players.length %d %n", players.length);
         for (int i = selfPlayClients.length*2; i < players.length; i++) {
             envSteps[i] += 1;
-            System.out.printf("i-selfPlayClients.length*2 %d %n", i - selfPlayClients.length * 2);
-            System.out.printf("i %d %n", i);
-            System.out.printf("action.length %d %n", action.length);
+            //System.out.printf("i-selfPlayClients.length*2 %d %n", i - selfPlayClients.length * 2);
+            //System.out.printf("i %d %n", i);
+            //System.out.printf("action.length %d %n", action.length);
             rs[i] = clients[i-selfPlayClients.length*2].gameStep(action[i], players[i]);
             if (rs[i].done[0] || envSteps[i] >= maxSteps) {
                 // TRICKY: note that `clients` already resets the shared `observation`
