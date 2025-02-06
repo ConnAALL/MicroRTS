@@ -148,7 +148,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
 
                     if (Math.sqrt((float) ((ux - x) ^ 2 + (uy - y) ^ 2)) < maxAttackRadius) // Check if selected tile is close enough to the unit
                     {
-                        action[x][y] *= 0.7f; //tile policy selected. Reduce it to reduce the probability of it getting reselected
+                        flatAction[pos] *= 0.7f; //tile policy selected. Reduce it to reduce the probability of it getting reselected
                         UnitType type = types.get(multinomial(softmax(unitTypeAction)));
                         unitAction(player, gs, u, x, y, type);
                     }
