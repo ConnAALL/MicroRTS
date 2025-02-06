@@ -119,46 +119,47 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
     @Override
     public PlayerAction getAction(final int player, final GameState gs, int[][] action) {
 
-        PlayerAction pa = PlayerAction.fromVectorAction(action, gs, utt, player, maxAttackRadius);
+        //PlayerAction pa = PlayerAction.fromVectorAction(action, gs, utt, player, maxAttackRadius);
+        //return pa;
+
+        //Input a softmaxed tensor
+        // output consists of 
+        // output unit type selection (size of unit type count)
+        // output tile position (size of board)^2
+        // top unittype selection and top 4 tile position selection are chosen
+        PhysicalGameState pgs = gs.getPhysicalGameState();
+        
+        int[] inputINT = NetworkHelpers.getFlattened(pgs, player);
+        double[] input = new double[inputINT.length];
+        for (int i = 0; i < inputINT.length; i++) {
+            input[i] = inputINT[i]; // Cast int to double
+        }
+        int[] unitTypeAction = action[0];
+        int[][] tileAction = Arrays.copyOfRange(action, 1, action.length);
+        List<UnitType> types = utt.getUnitTypes();
+        if (unitTypeAction.length == types.size()) { // check if something wrong
+            for (Unit u : pgs.getUnits()) {
+                if (u.getPlayer() == player && gs.getActionAssignment(u) == null) {//for each friendly unit without action assigned
+                    // Softmax to select tile policy
+                    int[] pos = multinomial(softmax(tileAction));
+                    int x = pos[0];
+                    int y = pos[1];
+                    int unitPos = u.getPosition(pgs);
+                    int ux = unitPos / pgs.getWidth();
+                    int uy = unitPos % pgs.getHeight();
+
+                    if (Math.sqrt((float) ((ux - x) ^ 2 + (uy - y) ^ 2)) < maxAttackRadius) // Check if selected tile is close enough to the unit
+                    {
+                        action[x][y] *= 0.7f; //tile policy selected. Reduce it to reduce the probability of it getting reselected
+                        UnitType type = types.get(multinomial(softmax(unitTypeAction))[0]);
+                        unitAction(player, gs, u, x, y, type);
+                    }
+                }
+            }
+        }
+        PlayerAction pa =  translateActions(player, gs);
         pa.fillWithNones(gs, player, 1);
         return pa;
-
-        // //Input a softmaxed tensor
-        // // output consists of 
-        // // output unit type selection (size of unit type count)
-        // // output tile position (size of board)^2
-        // // top unittype selection and top 4 tile position selection are chosen
-        // PhysicalGameState pgs = gs.getPhysicalGameState();
-        
-        // int[] inputINT = NetworkHelpers.getFlattened(pgs, player);
-        // double[] input = new double[inputINT.length];
-        // for (int i = 0; i < inputINT.length; i++) {
-        //     input[i] = inputINT[i]; // Cast int to double
-        // }
-        // int[] unitTypeAction = action[0];
-        // int[][] tileAction = Arrays.copyOfRange(action, 1, action.length);
-        // List<UnitType> types = utt.getUnitTypes();
-        // if(unitTypeAction.length == types.size()) { // check if something wrong
-        //     for (Unit u : pgs.getUnits()) { 
-        //         if (u.getPlayer() == player && gs.getActionAssignment(u) == null) {//for each friendly unit without action assigned
-        //             // Softmax to select tile policy
-        //             int[] pos = multinomial(softmax(tileAction));
-        //             int x = pos[0];
-        //             int y = pos[1];
-        //             int unitPos = u.getPosition(pgs);
-        //             int ux = unitPos / pgs.getWidth();
-        //             int uy = unitPos % pgs.getHeight();
-                    
-        //             if (Math.sqrt((float) ((ux - x) ^ 2 + (uy - y) ^ 2)) < maxAttackRadius) // Check if selected tile is close enough to the unit
-        //             {
-        //                 action[x][y] *= 0.7f; //tile policy selected. Reduce it to reduce the probability of it getting reselected
-        //                 UnitType type = types.get(multinomial(softmax(unitTypeAction))[0]);
-        //                 unitAction(player, gs, u, x, y, type);
-        //             }
-        //         }
-        //     }
-        // }
-        // return translateActions(player, gs);
     }
     
     public void unitAction(int playerID, GameState gs, Unit selectedUnit, int x, int y, UnitType trainType) {
