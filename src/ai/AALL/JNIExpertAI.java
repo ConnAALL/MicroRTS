@@ -123,6 +123,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         System.out.printf("JNIExpertAI::getAction action[1].length %d%n", action[1].length);
 
         PlayerAction pa = PlayerAction.fromVectorAction(action, gs, utt, player, maxAttackRadius);
+        pa.fillWithNones(gs, player, 1);
         return pa;
 
         //Input a softmaxed tensor
