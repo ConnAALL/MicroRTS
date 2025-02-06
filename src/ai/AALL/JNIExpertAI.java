@@ -118,9 +118,9 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
     
     @Override
     public PlayerAction getAction(final int player, final GameState gs, int[][] action) {
-        System.out.printf("JNIExpertAI::getAction action.length", action.length);
-        System.out.printf("JNIExpertAI::getAction action[0].length", action[0].length);
-        System.out.printf("JNIExpertAI::getAction action[1].length", action[1].length);
+        System.out.printf("JNIExpertAI::getAction action.length %d%n", action.length);
+        System.out.printf("JNIExpertAI::getAction action[0].length %d%n", action[0].length);
+        System.out.printf("JNIExpertAI::getAction action[1].length %d%n", action[1].length);
 
         //PlayerAction pa = PlayerAction.fromVectorAction(action, gs, utt, player, maxAttackRadius);
         //return pa;
