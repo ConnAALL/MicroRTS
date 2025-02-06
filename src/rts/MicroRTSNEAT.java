@@ -108,7 +108,7 @@ public class MicroRTSNEAT {
 
 		nome = "./listay";
         Neat.writeParam(nome);
-        gameSettings.overrideFromArgs();
+        //gameSettings.overrideFromArgs();
         UnitTypeTable ut = new UnitTypeTable(gameSettings.getUTTVersion(), gameSettings.getConflictPolicy());
         new CoevolutionManager(ut.getUnitTypes());
         for(int i = 0; i < 10; i++)
