@@ -150,7 +150,9 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     {
                         System.out.printf("Unit at %d %d, acting on %d %d %n", ux, uy, x, y);
                         flatAction[pos] *= 0.7f; //tile policy selected. Reduce it to reduce the probability of it getting reselected
-                        UnitType type = types.get(multinomial(softmax(unitTypeAction)));
+                        int ut = multinomial(softmax(unitTypeAction));
+                        System.out.printf("Evaluated Unit Type: %d %n", ut);
+                        UnitType type = types.get(ut);
                         unitAction(player, gs, u, x, y, type);
                     }
                 }
@@ -187,7 +189,11 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         }
         else if (unitType.canHarvest) //harvester is builder
         {
-            if (rawUnit.getType().isResource) {
+            if (rawUnit == null || rawUnit.getPlayer() == playerID)
+            {
+                move(selectedUnit, x, y);
+            }
+            else if (rawUnit.getType().isResource) {
                 Unit base = null;
                 double bestD = 0;
                 for (Unit u : pgs.getUnits()) {
@@ -211,9 +217,6 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             else if (!trainType.canMove)
             {
                 build(selectedUnit, trainType, x, y);
-            }
-            else if (rawUnit == null || rawUnit.getPlayer() == playerID) { // empty 
-                move(selectedUnit, x, y);
             }
         }
         else //unit can move and can not harvest
