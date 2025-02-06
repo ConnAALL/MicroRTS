@@ -265,8 +265,8 @@ public class JNIGridnetVecClient {
                 envSteps[i*2+1] =0;
             }
         }
-        System.out.printf("selfPlayClients.length %d %n", selfPlayClients.length);
-        System.out.printf("players.length %d %n", players.length);
+        //System.out.printf("selfPlayClients.length %d %n", selfPlayClients.length);
+        //System.out.printf("players.length %d %n", players.length);
         for (int i = selfPlayClients.length*2; i < players.length; i++) {
             envSteps[i] += 1;
             //System.out.printf("i-selfPlayClients.length*2 %d %n", i - selfPlayClients.length * 2);
