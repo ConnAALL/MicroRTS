@@ -1,7 +1,9 @@
 package ai.AALL;
 
+import java.util.Arrays;
 import java.util.List;
-
+import java.util.Random;
+import java.lang.Math;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
 import ai.core.ParameterSpecification;
@@ -50,9 +52,72 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         return reward;
     }
 
+    // Softmax a tensor
+    // Does not affect action
+    private float[] softmax(final int[] action) {
+        float sum = 0;
+        float[] logit = new float[action.length];
+        for (int i = 0; i < action.length; i++) {
+            sum += action[i];
+            logit[i] = (float) action[i];
+        }
+        for (int i = 0; i < logit.length; i++) {
+            logit[i] = logit[i] / sum;
+        }
+        return logit;
+    }
+
+    // Softmax a tensor
+    // Does not affect action
+    private float[][] softmax(final int[][] action) {
+        float sum = 0;
+        float[][] logit = new float[action.length][action[0].length];
+        for (int i = 0; i < action.length; i++) {
+            for (int j = 0; j < action[0].length; j++) {
+                sum += action[i][j];
+                logit[i][j] = (float) action[i][j];
+            }
+        }
+        for (int i = 0; i < logit.length; i++) {
+            for (int j = 0; j < logit[0].length; j++) {
+                logit[i][j] = logit[i][j] / sum;
+            }
+        }
+        return logit;
+    }
+
+    private int[] multinomial(final float[] logits)
+    {
+        Random random = new Random();
+        float r = random.nextFloat(); // Random number in [0, 1)
+        float cumulativeSum = 0.0f;
+        for (int i = 0; i < logits.length; i++) {
+            cumulativeSum += logits[i];
+            if (r < cumulativeSum) {
+                return new int[] { i };
+            }
+        }
+        return null;
+    }
+
+    private int[] multinomial(final float[][] logits)
+    {
+        Random random = new Random();
+        float r = random.nextFloat(); // Random number in [0, 1)
+        float cumulativeSum = 0.0f;
+        for (int i = 0; i < logits.length; i++) {
+            for (int j = 0; j < logits[0].length; j++) {
+                cumulativeSum += logits[i][j];
+                if (r < cumulativeSum) {
+                    return new int[] { i, j };
+                }
+            }
+        }
+        return null;
+    }
     
     @Override
-    public PlayerAction getAction(final int player, final GameState gs, final int[][] action) {
+    public PlayerAction getAction(final int player, final GameState gs, int[][] action) {
         //Input a softmaxed tensor
         // output consists of 
         // output unit type selection (size of unit type count)
@@ -65,18 +130,24 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         for (int i = 0; i < inputINT.length; i++) {
             input[i] = inputINT[i]; // Cast int to double
         }
-        for (Unit u : pgs.getUnits()) { 
-            if (u.getPlayer() == player) {//for each friendly unit, think
-                if (gs.getActionAssignment(u) == null) {
-
-                    // u.getX() + u.getY() * pgs.getHeight() = action.output_tile
-                    int x = action.output_tile % pgs.getHeight();
-                    int y = (action.output_tile - x) / pgs.getHeight();
-
-                    List<UnitType> types = unitTable.getUnitTypes();
-                    if(action.output_type != types.size()) // check if nullop
+        int[] unitTypeAction = action[0];
+        int[][] tileAction = Arrays.copyOfRange(action, 1, action.length);
+        List<UnitType> types = utt.getUnitTypes();
+        if(unitTypeAction.length == types.size()) { // check if something wrong
+            for (Unit u : pgs.getUnits()) { 
+                if (u.getPlayer() == player && gs.getActionAssignment(u) == null) {//for each friendly unit without action assigned
+                    // Softmax to select tile policy
+                    int[] pos = multinomial(softmax(tileAction));
+                    int x = pos[0];
+                    int y = pos[1];
+                    int unitPos = u.getPosition(pgs);
+                    int ux = unitPos / pgs.getWidth();
+                    int uy = unitPos % pgs.getHeight();
+                    
+                    if (Math.sqrt((float) ((ux - x) ^ 2 + (uy - y) ^ 2)) < maxAttackRadius) // Check if selected tile is close enough to the unit
                     {
-                        UnitType type = types.get(action.output_type);
+                        action[x][y] *= 0.7f; //tile policy selected. Reduce it to reduce the probability of it getting reselected
+                        UnitType type = types.get(multinomial(softmax(unitTypeAction))[0]);
                         unitAction(player, gs, u, x, y, type);
                     }
                 }
