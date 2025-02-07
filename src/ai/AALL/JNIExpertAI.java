@@ -67,25 +67,6 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         return logit;
     }
 
-    // Softmax a tensor
-    // Does not affect action
-    private float[][] softmax(final int[][] action) {
-        float sum = 0;
-        float[][] logit = new float[action.length][action[0].length];
-        for (int i = 0; i < action.length; i++) {
-            for (int j = 0; j < action[0].length; j++) {
-                sum += action[i][j];
-                logit[i][j] = (float) action[i][j];
-            }
-        }
-        for (int i = 0; i < logit.length; i++) {
-            for (int j = 0; j < logit[0].length; j++) {
-                logit[i][j] = logit[i][j] / sum;
-            }
-        }
-        return logit;
-    }
-
     private int multinomial(final float[] logits) throws Exception
     {
         Random random = new Random();
@@ -97,23 +78,8 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                 return i;
             }
         }
-        throw new Exception("Probability does not add up to 1");
-    }
-
-    private int[] multinomial(final float[][] logits)
-    {
-        Random random = new Random();
-        float r = random.nextFloat(); // Random number in [0, 1)
-        float cumulativeSum = 0.0f;
-        for (int i = 0; i < logits.length; i++) {
-            for (int j = 0; j < logits[0].length; j++) {
-                cumulativeSum += logits[i][j];
-                if (r < cumulativeSum) {
-                    return new int[] { i, j };
-                }
-            }
-        }
-        return null;
+        System.out.println("Probability does not add to 1?");
+        return logits.length - 1; //probably floating point error...
     }
     
     @Override
