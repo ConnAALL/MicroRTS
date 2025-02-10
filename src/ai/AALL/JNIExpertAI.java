@@ -67,7 +67,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         return logit;
     }
 
-    private int multinomial(final float[] logits) throws Exception
+    private int multinomial(final float[] logits) throws RuntimeException
     {
         Random random = new Random();
         float r = random.nextFloat(); // Random number in [0, 1)
@@ -78,8 +78,9 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                 return i;
             }
         }
-        System.out.println("Probability does not add to 1?");
-        return logits.length - 1; //probably floating point error...
+        throw new RuntimeException(String.format("Sum is only %f", cumulativeSum));
+        //System.out.println();
+        //return logits.length - 1; //probably floating point error...
     }
     
     @Override
