@@ -47,11 +47,13 @@ public class NaiveMCTSNode extends MCTSNode {
         while (gs.winner() == -1 &&
                !gs.gameover() &&
                !gs.canExecuteAnyAction(maxplayer) &&
-               !gs.canExecuteAnyAction(minplayer)) {
-            gs.cycle();
+                !gs.canExecuteAnyAction(minplayer)) {
+            gs.cycle(); // play the whole game
         }
+        // at this point either the game ended or there is no more actions to execute
         if (gs.winner() != -1 || gs.gameover()) {
             type = -1;
+        // the game is not over and the simulation can continue
         } else if (gs.canExecuteAnyAction(maxplayer)) {
             type = 0;
             moveGenerator = new PlayerActionGenerator(gs, maxplayer);
@@ -212,7 +214,8 @@ public class NaiveMCTSNode extends MCTSNode {
                         (visits!=0 && ate.visit_count[i]==0) ||
                         (visits!=0 && (ate.accum_evaluation[i]/ate.visit_count[i])>bestEvaluation)) {
                         bestIdx = i;
-                        if (ate.visit_count[i]>0) bestEvaluation = (ate.accum_evaluation[i]/ate.visit_count[i]);
+                        // This just sounds like some simpler version of UCB value calculation
+                        if (ate.visit_count[i]>0) bestEvaluation = (ate.accum_evaluation[i]/ate.visit_count[i]); 
                                              else bestEvaluation = 0;
                         visits = ate.visit_count[i];
                     }

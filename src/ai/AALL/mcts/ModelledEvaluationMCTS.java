@@ -2,14 +2,17 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ai.mcts.naivemcts;
+package ai.AALL.mcts;
 
 import ai.*;
 import ai.core.AI;
 import ai.core.AIWithComputationBudget;
 import ai.core.ParameterSpecification;
 import ai.evaluation.EvaluationFunction;
-import ai.evaluation.SimpleSqrtEvaluationFunction3;
+import ai.AALL.evaluation.SSVDEvaluation;
+import ai.AALL.evaluation.WeightedEvaluation;
+import ai.mcts.naivemcts.NaiveMCTSNode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -20,11 +23,11 @@ import ai.core.InterruptibleAI;
 
 /**
  *
- * @author santi
+ * @author Yeonghun Lee, based on the work on NaiveMCTS by santi
  */
-public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleAI {
+public class ModelledEvaluationMCTS extends AIWithComputationBudget implements InterruptibleAI {
     public static int DEBUG = 0;
-    public EvaluationFunction ef;
+    public WeightedEvaluation ef;
        
     Random r = new Random();
     public AI playoutPolicy = new RandomBiasedAI();
@@ -62,19 +65,18 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
     public long total_time = 0;
     
     
-    public NaiveMCTS(UnitTypeTable utt) {
+    public ModelledEvaluationMCTS(UnitTypeTable utt) {
         this(100,-1,100,10,
              0.3f, 0.0f, 0.4f,
              new RandomBiasedAI(),
-             new SimpleSqrtEvaluationFunction3(), true);
-    }    
+             new SSVDEvaluation(), true);
+    }
     
-    
-    public NaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, 
+    public ModelledEvaluationMCTS(int available_time, int max_playouts, int lookahead, int max_depth, 
                                float e_l, float discout_l,
                                float e_g, float discout_g, 
                                float e_0, float discout_0, 
-                               AI policy, EvaluationFunction a_ef,
+                               AI policy, WeightedEvaluation a_ef,
                                boolean fensa) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
@@ -90,7 +92,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         forceExplorationOfNonSampledActions = fensa;
     }    
 
-    public NaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, EvaluationFunction a_ef, boolean fensa) {
+    public ModelledEvaluationMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, AI policy, SSVDEvaluation a_ef, boolean fensa) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -105,7 +107,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         forceExplorationOfNonSampledActions = fensa;
     }    
     
-    public NaiveMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, EvaluationFunction a_ef, boolean fensa) {
+    public ModelledEvaluationMCTS(int available_time, int max_playouts, int lookahead, int max_depth, float e_l, float e_g, float e_0, int a_global_strategy, AI policy, SSVDEvaluation a_ef, boolean fensa) {
         super(available_time, max_playouts);
         MAXSIMULATIONTIME = lookahead;
         playoutPolicy = policy;
@@ -133,21 +135,26 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         
     
     public AI clone() {
-        return new NaiveMCTS(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, playoutPolicy, ef, forceExplorationOfNonSampledActions);
+        return new ModelledEvaluationMCTS(TIME_BUDGET, ITERATIONS_BUDGET, MAXSIMULATIONTIME, MAX_TREE_DEPTH, epsilon_l, discount_l, epsilon_g, discount_g, epsilon_0, discount_0, playoutPolicy, ef, forceExplorationOfNonSampledActions);
     }    
     
-    
-    public PlayerAction getAction(int player, GameState gs) throws Exception
-    {
+    public PlayerAction getAction(int player, GameState gs) throws Exception{
         if (gs.canExecuteAnyAction(player)) {
-            startNewComputation(player,gs.clone());
+            startNewComputation(player, gs.clone());
             computeDuringOneGameFrame();
             return getBestActionSoFar();
         } else {
-            return new PlayerAction();        
-        }       
+            return new PlayerAction();
+        }
     }
     
+    public int[][][] getObservation(GameState gs){
+        return gs.getVectorObservation(player);
+    }
+    
+    public void setWeight(float[] chromosome){
+        ef.setWeight(chromosome);
+    }
     
     public void startNewComputation(int a_player, GameState gs) throws Exception {
         player = a_player;
@@ -348,7 +355,7 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         parameters.add(new ParameterSpecification("Discount_0",float.class,1.0));
                 
         parameters.add(new ParameterSpecification("DefaultPolicy",AI.class, playoutPolicy));
-        parameters.add(new ParameterSpecification("EvaluationFunction", EvaluationFunction.class, new SimpleSqrtEvaluationFunction3()));
+        parameters.add(new ParameterSpecification("EvaluationFunction", EvaluationFunction.class, new SSVDEvaluation()));
 
         parameters.add(new ParameterSpecification("ForceExplorationOfNonSampledActions",boolean.class,true));
         
@@ -451,9 +458,8 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
         return ef;
     }
     
-    
-    public void setEvaluationFunction(EvaluationFunction a_ef) {
-        ef = a_ef;
+    public void setEvaluationFunction(EvaluationFunction a_ef) throws Exception{
+        throw new Exception("Modelled Evaluation MCTS agent does not take custom evaluation function");
     }
     
     public boolean getForceExplorationOfNonSampledActions() {
@@ -463,5 +469,5 @@ public class NaiveMCTS extends AIWithComputationBudget implements InterruptibleA
     public void setForceExplorationOfNonSampledActions(boolean fensa)
     {
         forceExplorationOfNonSampledActions = fensa;
-    }    
+    }
 }
