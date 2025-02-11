@@ -52,26 +52,51 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         return reward;
     }
 
+    private float[] MinMax(final int[] action)
+    {
+        float[] out = new float[action.length];
+        int min = Integer.MAX_VALUE;
+        for(int i=0;i<action.length;i++)
+        {
+            if (action[i] < min) {
+                min = action[i];
+            }
+        }
+        int max = Integer.MIN_VALUE;
+        for(int i=0;i<action.length;i++)
+        {
+            if (action[i] > max) {
+                max = action[i];
+            }
+        }
+        int range = max - min;
+        for(int i=0;i<action.length;i++)
+        {
+            out[i] = 2 * (action[i] - min) / (float) range - 1;
+        }
+        return out;
+    }
+
     // Softmax a tensor
     // Does not affect action
     private float[] softmax(final int[] action) {
         float sum = 0;
-        float[] logit = new float[action.length];
+        float[] scaled = MinMax(action);
         for (int i = 0; i < action.length; i++) {
-            float n = (action[i] / 10000.0f);
+            float n = scaled[i];
             float v = (float) Math.exp((double) n);
             System.out.println(String.format("\tn v %f %f", n, v));
             sum += v;
-            logit[i] = v;
+            scaled[i] = v;
         }
         if (sum == 0)
         {
             throw new RuntimeException(String.format("Division by 0"));
         }
-        for (int i = 0; i < logit.length; i++) {
-            logit[i] = logit[i] / sum;
+        for (int i = 0; i < scaled.length; i++) {
+            scaled[i] = scaled[i] / sum;
         }
-        return logit;
+        return scaled;
     }
 
     private int multinomial(final float[] logits) throws RuntimeException
