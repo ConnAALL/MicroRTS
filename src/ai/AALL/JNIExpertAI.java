@@ -59,6 +59,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         float[] logit = new float[action.length];
         for (int i = 0; i < action.length; i++) {
             float v = (float) Math.exp((float) (action[i]) / 10000.0f);
+            System.out.println(String.format("\tv %f", v));
             sum += v;
             logit[i] = v;
         }
