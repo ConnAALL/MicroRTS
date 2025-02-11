@@ -58,7 +58,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         float sum = 0;
         float[] logit = new float[action.length];
         for (int i = 0; i < action.length; i++) {
-            float v = (float) Math.exp((float) (action[i]) / 1000000.0f);
+            float v = (float) Math.exp((float) (action[i]) / 10000.0f);
             sum += v;
             logit[i] = v;
         }
@@ -74,6 +74,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
 
     private int multinomial(final float[] logits) throws RuntimeException
     {
+        assert logits.length != 0 : "logits can not be 0";
         Random random = new Random();
         float r = random.nextFloat(); // Random number in [0, 1)
         float cumulativeSum = 0.0f;
