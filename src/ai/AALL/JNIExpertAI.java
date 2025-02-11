@@ -80,6 +80,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         float cumulativeSum = 0.0f;
         for (int i = 0; i < logits.length; i++) {
             cumulativeSum += logits[i];
+            System.out.println(String.format("\tAdding %f", logits[i]));
             if (r < cumulativeSum) {
                 return i;
             }
