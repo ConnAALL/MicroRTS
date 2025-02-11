@@ -62,6 +62,10 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             sum += v;
             logit[i] = v;
         }
+        if (sum == 0)
+        {
+            throw new RuntimeException(String.format("Division by 0"));
+        }
         for (int i = 0; i < logit.length; i++) {
             logit[i] = logit[i] / sum;
         }
