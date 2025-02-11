@@ -85,7 +85,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         for (int i = 0; i < action.length; i++) {
             float n = scaled[i];
             float v = (float) Math.exp((double) n);
-            System.out.println(String.format("\tn v %f %f", n, v));
+            //System.out.println(String.format("\tn v %f %f", n, v));
             sum += v;
             scaled[i] = v;
         }
@@ -107,7 +107,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         float cumulativeSum = 0.0f;
         for (int i = 0; i < logits.length; i++) {
             cumulativeSum += logits[i];
-            System.out.println(String.format("\tAdding %f", logits[i]));
+            //System.out.println(String.format("\tAdding %f", logits[i]));
             if (r < cumulativeSum) {
                 return i;
             }
