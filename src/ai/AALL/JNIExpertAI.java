@@ -147,15 +147,19 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     int ux = unitPos / pgs.getWidth();
                     int uy = unitPos % pgs.getHeight();
                     
-                    if (Math.sqrt((float) ((ux - x) ^ 2 + (uy - y) ^ 2)) < maxAttackRadius) // Check if selected tile is close enough to the unit
+                    //if (Math.sqrt((float) ((ux - x) ^ 2 + (uy - y) ^ 2)) < maxAttackRadius) // Check if selected tile is close enough to the unit
+                    
+                    //System.out.printf("Unit at %d %d, acting on %d %d %n", ux, uy, x, y);
+                    int ut = multinomial(softmax(unitTypeAction));
+                    //System.out.printf("Evaluated Unit Type: %d %n", ut);
+                    UnitType type = types.get(ut);
+                    boolean shouldReduce = unitAction(player, gs, u, x, y, type);
+                    if(shouldReduce)
                     {
-                        //System.out.printf("Unit at %d %d, acting on %d %d %n", ux, uy, x, y);
                         flatAction[pos] *= 0.7f; //tile policy selected. Reduce it to reduce the probability of it getting reselected
-                        int ut = multinomial(softmax(unitTypeAction));
-                        //System.out.printf("Evaluated Unit Type: %d %n", ut);
-                        UnitType type = types.get(ut);
-                        unitAction(player, gs, u, x, y, type);
+                        // This is only called if the unit is movable unit
                     }
+                    
                 }
             }
         }
@@ -164,7 +168,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         return pa;
     }
     
-    public void unitAction(int playerID, GameState gs, Unit selectedUnit, int x, int y, UnitType trainType) {
+    public boolean unitAction(int playerID, GameState gs, Unit selectedUnit, int x, int y, UnitType trainType) {
         PhysicalGameState pgs = gs.getPhysicalGameState();
         Unit rawUnit = pgs.getUnitAt(x, y);
         UnitType unitType = selectedUnit.getType();
@@ -187,12 +191,14 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     //move
         if (!unitType.canMove && trainType.canMove) { //building
             train(selectedUnit, trainType);
+            return false;
         }
         else if (unitType.canHarvest) //harvester is builder
         {
             if (rawUnit == null || rawUnit.getPlayer() == playerID)
             {
                 move(selectedUnit, x, y);
+                return true;
             }
             else if (rawUnit.getType().isResource) {
                 Unit base = null;
@@ -209,28 +215,31 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                 }
                 if (base != null) {
                     harvest(selectedUnit, rawUnit, base);
+                    return true;
                 }
             }
             else if(rawUnit.getPlayer() != playerID && selectedUnit.getType().canAttack) //check if the target tile has enemy
             {
-                attack(selectedUnit, rawUnit); //make sure worker can attack   
+                attack(selectedUnit, rawUnit); //make sure worker can attack
+                return true; 
             }
             else if (!trainType.canMove)
             {
                 build(selectedUnit, trainType, x, y);
+                return true;
             }
         }
         else //unit can move and can not harvest
         {
-            if(rawUnit == null || rawUnit.getPlayer() == playerID)
-            {
+            if (rawUnit == null || rawUnit.getPlayer() == playerID) {
                 move(selectedUnit, x, y);
-            }
-            else if (selectedUnit.getType().canAttack)
-            {
+                return true;
+            } else if (selectedUnit.getType().canAttack) {
                 attack(selectedUnit, rawUnit);
+                return true;
             }
         }
+        return true;
     }
 
     @Override
