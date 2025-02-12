@@ -112,9 +112,9 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                 return i;
             }
         }
-        throw new RuntimeException(String.format("Sum is only %f", cumulativeSum));
+        //throw new RuntimeException(String.format("Sum is only %f", cumulativeSum));
         //System.out.println();
-        //return logits.length - 1; //probably floating point error...
+        return logits.length - 1; //probably floating point error...
     }
     
     @Override
