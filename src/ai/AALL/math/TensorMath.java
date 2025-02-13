@@ -231,7 +231,8 @@ public class TensorMath {
         int paddedDepth = inputDepth + 2 * paddingDepth;
         int paddedRow = inputRow + 2 * paddingRow;
         int paddedCol = inputCol + 2 * paddingCol;
-        
+        //System.out.printf("\nNEW SIZE: %d %d %d", outDepth, outRow, outCol);
+
         SimpleMatrix[] paddedInput = new SimpleMatrix[paddedDepth];
         for (int d = 0; d < paddedDepth; d++) {
             paddedInput[d] = new SimpleMatrix(inputRow, inputCol);
@@ -240,7 +241,7 @@ public class TensorMath {
             //starting index = 3 (pads are 0 1 2)
             //ending index = 6 (pads are 7 8 9)
             //paddedDepth - padding = 7
-            if (d >= paddingDepth || d < paddedDepth - paddingDepth)
+            if (d >= paddingDepth && d < paddedDepth - paddingDepth)
             {
                 for (int r = 0; r < inputRow; r++) {
                     for (int c = 0; c < inputCol; c++) {
@@ -254,7 +255,7 @@ public class TensorMath {
         int outDepth = (paddedDepth - kernelDepth) / strideDepth + 1;
         int outRow = (paddedRow - kernelRow) / strideRow + 1;
         int outCol = (paddedCol - kernelCol) / strideCol + 1;
-        System.out.printf("%d %d %d", outDepth, outRow, outCol);
+        System.out.printf("\nNEW SIZE: %d %d %d", outDepth, outRow, outCol);
         
         // Create output tensor
         SimpleMatrix[] output = new SimpleMatrix[outDepth];
