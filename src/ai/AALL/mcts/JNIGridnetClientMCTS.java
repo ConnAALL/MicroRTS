@@ -34,7 +34,7 @@ import rts.units.UnitTypeTable;
  *
  * @author santi and costa
  */
-public class JNIGridnetClient {
+public class JNIGridnetClientMCTS {
 
     // Settings
     public RewardFunctionInterface[] rfs;
@@ -115,7 +115,7 @@ public class JNIGridnetClient {
      * @param partial_obs
      * @throws Exception
      */
-    public JNIGridnetClient(RewardFunctionInterface[] a_rfs, String a_micrortsPath, String a_mapPath, AI a_ai2, UnitTypeTable a_utt, boolean partial_obs) throws Exception{
+    public JNIGridnetClientMCTS(RewardFunctionInterface[] a_rfs, String a_micrortsPath, String a_mapPath, AI a_ai2, UnitTypeTable a_utt, boolean partial_obs) throws Exception{
         micrortsPath = a_micrortsPath;
         mapPath = a_mapPath;
         rfs = a_rfs;

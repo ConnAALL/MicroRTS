@@ -17,7 +17,7 @@ import rts.units.UnitTypeTable;
 public class JNIGridnetVecClient {
 	
 	/** Clients of 1 Python/JNI agent vs. 1 Java bot */
-    public JNIGridnetClient[] clients;
+    public JNIGridnetClientMCTS[] clients;
     /** Clients of 1 Python/JNI agent vs. 1 Python/JNI agent */
     public JNIGridnetClientSelfPlay[] selfPlayClients;
     /** Clients of 1 Java bot vs. 1 Java bot */
@@ -118,7 +118,7 @@ public class JNIGridnetVecClient {
         for (int i = 0; i < selfPlayClients.length; i++) {
             selfPlayClients[i] = new JNIGridnetClientSelfPlay(a_rfs, a_micrortsPath, mapPaths[i*2], a_utt, partialObs);
         }
-        clients = new JNIGridnetClient[a_num_envs];
+        clients = new JNIGridnetClientMCTS[a_num_envs];
         for (int i = 0; i < clients.length; i++) {
             System.out.printf("a_num_envs %d\n", a_num_envs);
             System.out.printf("mapPaths[a_num_selfplayenvs+i] %s\n ", mapPaths[a_num_selfplayenvs + i]);
@@ -128,11 +128,11 @@ public class JNIGridnetVecClient {
             assert mapPaths[a_num_selfplayenvs+i] != null : "mapPaths[a_num_selfplayenvs+i] is null";
             assert a_ai2s[i] != null : "a_ai2s[i] is null";
             assert a_utt != null : "a_utt is null";
-            clients[i] = new JNIGridnetClient(a_rfs, a_micrortsPath, mapPaths[a_num_selfplayenvs+i], a_ai2s[i], a_utt, partialObs);
+            clients[i] = new JNIGridnetClientMCTS(a_rfs, a_micrortsPath, mapPaths[a_num_selfplayenvs+i], a_ai2s[i], a_utt, partialObs);
         }
 
         // initialize storage
-        Response r = new JNIGridnetClient(a_rfs, a_micrortsPath, mapPaths[0], new PassiveAI(a_utt), a_utt, partialObs).reset(0);
+        Response r = new JNIGridnetClientMCTS(a_rfs, a_micrortsPath, mapPaths[0], new PassiveAI(a_utt), a_utt, partialObs).reset(0);
         int s1 = a_num_selfplayenvs + a_num_envs;
         int s2 = r.observation.length; 
         int s3 = r.observation[0].length;
@@ -332,7 +332,7 @@ public class JNIGridnetVecClient {
 
     public void close() throws Exception {
         if (clients != null) {
-            for (JNIGridnetClient client : clients) {
+            for (JNIGridnetClientMCTS client : clients) {
                 client.close();
             }
         }
