@@ -123,6 +123,11 @@ public class JNIGridnetVecClient {
             System.out.printf("a_num_envs %d\n", a_num_envs);
             System.out.printf("mapPaths[a_num_selfplayenvs+i] %s\n ", mapPaths[a_num_selfplayenvs + i]);
             System.out.printf("a_ai2s.length %d\n", a_ai2s.length);
+            assert a_rfs != null : "a_rfs is null";
+            assert a_micrortsPath != null : "a_micrortsPath is null";
+            assert mapPaths[a_num_selfplayenvs+i] != null : "mapPaths[a_num_selfplayenvs+i] is null";
+            assert a_ai2s[i] != null : "a_ai2s[i] is null";
+            assert a_utt != null : "a_utt is null";
             clients[i] = new JNIGridnetClient(a_rfs, a_micrortsPath, mapPaths[a_num_selfplayenvs+i], a_ai2s[i], a_utt, partialObs);
         }
 
