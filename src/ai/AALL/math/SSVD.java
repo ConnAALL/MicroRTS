@@ -38,7 +38,7 @@ public class SSVD {
         if (chromosome.length != expectedSize) {
             throw new IllegalArgumentException("Vector size must be " + expectedSize + ", but got " + chromosome.length);
         }
-
+        System.out.println("WeightedEvaluation::weight1");
         // Convert chromosome to weights_1
         int size_1 = this.preSTensors * Math.min(this.inputSizeH, this.inputSizeW) * Math.min(this.inputSizeH, this.inputSizeW);
         double[][][] weights_1 = new double[this.preSTensors][Math.min(this.inputSizeH, this.inputSizeW)][Math.min(this.inputSizeH, this.inputSizeW)];
@@ -48,7 +48,7 @@ public class SSVD {
             int colIndex = i % Math.min(this.inputSizeH, this.inputSizeW);
             weights_1[tensorIndex][rowIndex][colIndex] = chromosome[i];
         }
-
+        System.out.println("WeightedEvaluation::weight2");
         // Convert chromosome to weights_2
         int size_2 = this.postSTensors * Math.max(this.inputSizeH, this.inputSizeW) * Math.max(this.inputSizeH, this.inputSizeW);
         double[][][] weights_2 = new double[this.postSTensors][Math.max(this.inputSizeH, this.inputSizeW)][Math.max(this.inputSizeH, this.inputSizeW)];
@@ -58,7 +58,7 @@ public class SSVD {
             int colIndex = (i - size_1) % Math.max(this.inputSizeH, this.inputSizeW);
             weights_2[tensorIndex][rowIndex][colIndex] = chromosome[i];
         }
-
+        System.out.println("WeightedEvaluation::weightO1");
         // Convert chromosome to weightO
         double[][][] weightO = new double[1][this.outputSize][this.inputSizeW * this.inputSizeH];
         for (int i = size_1 + size_2; i < chromosome.length; i++) {
@@ -66,7 +66,7 @@ public class SSVD {
             int colIndex = (i - size_1 - size_2) % (this.inputSizeW * this.inputSizeH);
             weightO[0][rowIndex][colIndex] = chromosome[i];
         }
-
+        System.out.println("WeightedEvaluation::weightO2");
         // Return the weights
         return new double[][][][] {weights_1, weights_2, weightO};
     }
