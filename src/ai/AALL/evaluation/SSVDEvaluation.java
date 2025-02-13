@@ -1,6 +1,5 @@
 package ai.AALL.evaluation;
 
-import java.lang.Exception;
 import org.ejml.simple.SimpleMatrix;
 import org.ejml.simple.SimpleSVD;
 import org.ejml.data.DMatrix;
