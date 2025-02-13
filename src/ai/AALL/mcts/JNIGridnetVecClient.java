@@ -305,12 +305,11 @@ public class JNIGridnetVecClient {
         }
         
         for (int i = 0; i < rs.length; i++) {
-            observation[i] = rs[i].observation;
             reward[i] = rs[i].reward;
             done[i] = rs[i].done;
         }
         
-        responses.set(observation, reward, done);
+        responses.set(null, reward, done);
         return responses;
     }
 
