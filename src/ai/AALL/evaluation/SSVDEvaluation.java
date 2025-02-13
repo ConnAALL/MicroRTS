@@ -76,12 +76,16 @@ public class SSVDEvaluation extends WeightedEvaluation{
         int[] s1 = { 1, 1, 2 };
         int[] p1 = { 0, 0, 2 };
         SimpleMatrix[] convolved = TensorMath.applyConv3D(processedFeatures, k1, s1, p1);
+        System.out.printf("conv size %d", convolved.length, convolved[0].getNumRows(), convolved[0].getNumCols());
         convolved = TensorMath.applyConv3D(processedFeatures, k1, s1, p1);
+        System.out.printf("conv size %d", convolved.length, convolved[0].getNumRows(), convolved[0].getNumCols());
         convolved = TensorMath.applyConv3D(processedFeatures, k1, s1, p1);
+        System.out.printf("conv size %d", convolved.length, convolved[0].getNumRows(), convolved[0].getNumCols());
         int[] k2 = { 1, 1, 2 };
         int[] s2 = { 1, 1, 1 };
         int[] p2 = { 0, 0, 0 };
         convolved = TensorMath.applyConv3D(processedFeatures, k2, s2, p2);
+        System.out.printf("conv size %d", convolved.length, convolved[0].getNumRows(), convolved[0].getNumCols());
         SimpleMatrix flattened = TensorMath.squeeze(convolved);
         // Compute Singular Value Decomposition
         SimpleSVD<SimpleMatrix> svd = flattened.svd();
