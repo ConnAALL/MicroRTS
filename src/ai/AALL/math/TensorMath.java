@@ -60,6 +60,7 @@ public class TensorMath {
             // Weighted summation
             SimpleMatrix featureSum = new SimpleMatrix(input[0].getNumRows(), input[0].getNumCols());
             for (int j = 0; j < size; j++) {
+                System.out.printf("%d %d %d\n", p, j, p + j);
                 featureSum = featureSum.plus(input[p + j].scale(j)); // Multiply by weight
             }
 
