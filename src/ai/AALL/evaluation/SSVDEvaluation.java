@@ -41,10 +41,10 @@ public class SSVDEvaluation extends WeightedEvaluation{
         for (int i = 0; i < weights.length; i++) {
             doubleweights[i] = (double) weights[i];
         }
-        System.out.println("SSVDEvaluation::parseWeights");
+        //System.out.println("SSVDEvaluation::parseWeights");
         //System.out.println("Started initializing SSVDEvaluation 2 ");
         double[][][][] weightTensors = ssvd.chromosomeToWeights(doubleweights);
-        System.out.println("SSVDEvaluation::parseWeights::ssvd");
+        //System.out.println("SSVDEvaluation::parseWeights::ssvd");
         //System.out.println("Started initializing SSVDEvaluation 3 ");
         weights1 = new DMatrixRMaj[weightTensors[0].length];
         for (int i = 0; i < weightTensors[0].length; i++) {
@@ -55,7 +55,7 @@ public class SSVDEvaluation extends WeightedEvaluation{
             weights2[i] = new DMatrixRMaj(weightTensors[1][i]);  // Initialize weights1
         }
         weightsO = new DMatrixRMaj(weightTensors[2][0]);
-        System.out.println("SSVDEvaluation::parseWeights::END");
+        //System.out.println("SSVDEvaluation::parseWeights::END");
         //System.out.println("Started initializing SSVDEvaluation END ");
     }
     public double evaluateSSVD(double[][][] obs)
