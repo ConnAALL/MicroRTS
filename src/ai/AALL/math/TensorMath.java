@@ -1,4 +1,6 @@
 package ai.AALL.math;
+
+import java.util.Random;
 import org.ejml.data.Matrix;
 import org.ejml.data.DMatrixRMaj;
 import org.ejml.dense.row.CommonOps_DDRM;
@@ -35,20 +37,10 @@ public class TensorMath {
         return tensor;
     }
 
-    // Converts a 3D array to an array of 2D SimpleMatrix (each channel is a matrix)
+    // Converts a 3D array to an array of 2D SimpleMatrix (each channel is a SimpleMatrix)
     public static SimpleMatrix[] convertToMatrices(double[][][] tensor) {
         //int depth = tensor[0][0].length;
         System.out.printf("convertToMatrices:: %d %d %d\n", tensor.length, tensor[0].length, tensor[0][0].length); // 6 16 16
-        // SimpleMatrix[] matrices = new SimpleMatrix[depth];
-        // for (int k = 0; k < depth; k++) {
-        //     double[][] slice = new double[tensor.length][tensor[0].length];
-        //     for (int i = 0; i < tensor.length; i++) {
-        //         for (int j = 0; j < tensor[0].length; j++) {
-        //             slice[i][j] = tensor[i][j][k];
-        //         }
-        //     }
-        //     matrices[k] = new SimpleMatrix(slice);
-        // }
         SimpleMatrix[] matrices = new SimpleMatrix[tensor.length];
         for (int k = 0; k < tensor.length; k++)
         {
@@ -126,55 +118,6 @@ public class TensorMath {
         return padded;
     }
 
-    // Perform 3D convolution on an array of matrices (tensor)
-    public static SimpleMatrix[] applyConv3D(SimpleMatrix[] input, int[] kernelSize, int[] stride, int[] padding) {
-        int depth = input.length;
-        int rows = input[0].getNumRows();
-        int cols = input[0].getNumCols();
-
-        // Apply padding
-        SimpleMatrix[] paddedInput = applyPadding(input, padding);
-
-        // Compute new depth, height, and width after convolution
-        int newDepth = (depth - kernelSize[2] + 2 * padding[2]) / stride[2] + 1;
-        int newRows = (rows - kernelSize[0] + 2 * padding[0]) / stride[0] + 1;
-        int newCols = (cols - kernelSize[1] + 2 * padding[1]) / stride[1] + 1;
-
-        // Initialize output tensor
-        SimpleMatrix[] output = new SimpleMatrix[newDepth];
-        for (int d = 0; d < newDepth; d++) {
-            output[d] = new SimpleMatrix(newRows, newCols);
-        }
-
-        // Convolution operation
-        for (int d = 0; d < newDepth; d++) {
-            for (int i = 0; i < newRows; i++) {
-                for (int j = 0; j < newCols; j++) {
-                    double sum = 0.0;
-
-                    // Apply 3D kernel
-                    for (int kd = 0; kd < kernelSize[2]; kd++) {
-                        for (int ki = 0; ki < kernelSize[0]; ki++) {
-                            for (int kj = 0; kj < kernelSize[1]; kj++) {
-                                int rowIdx = i * stride[0] + ki;
-                                int colIdx = j * stride[1] + kj;
-                                int depthIdx = d * stride[2] + kd;
-
-                                if (rowIdx < paddedInput[0].getNumRows() && colIdx < paddedInput[0].getNumCols()
-                                        && depthIdx < paddedInput.length) {
-                                    sum += paddedInput[depthIdx].get(rowIdx, colIdx);
-                                }
-                            }
-                        }
-                    }
-
-                    output[d].set(i, j, sum);
-                }
-            }
-        }
-        return output;
-    }
-
     public static SimpleMatrix squeeze(SimpleMatrix[] tensor) {
         // Case 1: Remove first dimension if it's 1 (tensor[0] is the 2D matrix)
         if (tensor.length == 1) {
@@ -250,5 +193,94 @@ public class TensorMath {
     {
         double[] data = input.getData();
         return new DMatrixRMaj(data);
+    }
+
+    public static SimpleMatrix[] generateKernel3D(int[] k_s)
+    {
+        int depths = k_s[0];int rows = k_s[1];int cols = k_s[2];
+        double lowerBound = -1 * depths * rows * cols;
+        double upperBound = depths * rows * cols;
+
+        // Create the matrix with the given dimensions
+        SimpleMatrix[] output = new SimpleMatrix[depths];
+        Random random = new Random(1);
+        // Fill the matrix with random values from uniform distribution
+        for (int k = 0; k < depths; k++) {
+            output[k] = new SimpleMatrix(rows, cols);
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    // Generate a random value between lowerBound and upperBound
+                    double randomValue = lowerBound + (upperBound - lowerBound) * random.nextDouble();
+                    output[k].set(i, j, randomValue);
+                }
+            }
+        }
+        return output;
+    }
+
+    public static SimpleMatrix[] conv3D(SimpleMatrix[] input, int[] kernelSize, int[] stride, int[] padding) {
+        int inputDepth = input.length;
+        int inputRow = input[0].getNumRows();
+        int inputCol = input[0].getNumCols();
+        
+        int kernelDepth = kernelSize[0];int kernelRow = kernelSize[1];int kernelCol = kernelSize[2];
+        int strideDepth = stride[0];int strideRow = stride[1];int strideCol = stride[2];
+        int paddingDepth = padding[0];int paddingRow = padding[1];int paddingCol = padding[2];
+
+        int paddedDepth = inputDepth + 2 * paddingDepth;
+        int paddedRow = inputRow + 2 * paddingRow;
+        int paddedCol = inputCol + 2 * paddingCol;
+        
+        SimpleMatrix[] paddedInput = new SimpleMatrix[paddedDepth];
+        for (int d = 0; d < paddedDepth; d++) {
+            paddedInput[d] = new SimpleMatrix(inputRow, inputCol);
+            //paddedDepth = 10
+            //padding = 3
+            //starting index = 3 (pads are 0 1 2)
+            //ending index = 6 (pads are 7 8 9)
+            //paddedDepth - padding = 7
+            if (d >= paddingDepth || d < paddedDepth - paddingDepth)
+            {
+                for (int r = 0; r < inputRow; r++) {
+                    for (int c = 0; c < inputCol; c++) {
+                        paddedInput[d + paddingDepth].set(r + paddedRow, c + paddedCol, input[d].get(r, c));
+                    }
+                }
+            }
+        }
+        
+        // Calculate output dimensions
+        int outDepth = (paddedDepth - kernelDepth) / strideDepth + 1;
+        int outRow = (paddedRow - kernelRow) / strideRow + 1;
+        int outCol = (paddedCol - kernelCol) / strideCol + 1;
+        
+        // Create output tensor
+        SimpleMatrix[] output = new SimpleMatrix[outDepth];
+        SimpleMatrix[] kernel = generateKernel3D(kernelSize);
+        // Convolution operation
+        for (int d = 0; d < outDepth; d++) {
+            output[d] = new SimpleMatrix(outRow, outCol);
+            for (int r = 0; r < outRow; r++) {
+                for (int c = 0; c < outCol; c++) {
+                    double sum = 0.0;
+                    
+                    // Apply kernel to the current patch of input tensor
+                    for (int kd = 0; kd < kernelDepth; kd++) {
+                        for (int kr = 0; kr < kernelRow; kr++) {
+                            for (int kc = 0; kc < kernelCol; kc++) {
+                                int inputD = d * strideDepth + kd;
+                                int inputR = r * strideRow + kr;
+                                int inputC = c * strideCol + kc;
+
+                                // Perform element-wise multiplication and summation
+                                sum += paddedInput[inputD].getIndex(inputR, inputC) * kernel[kd].get(kr, kc);
+                            }
+                        }
+                    }
+                    output[d].set(r, c, sum);
+                }
+            }
+        }
+        return output;
     }
 }
