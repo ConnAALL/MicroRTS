@@ -236,15 +236,17 @@ public class TensorMath {
         SimpleMatrix[] paddedInput = new SimpleMatrix[paddedDepth];
         for (int d = 0; d < paddedDepth; d++) {
             paddedInput[d] = new SimpleMatrix(inputRow, inputCol);
-            //paddedDepth = 10
+            //input depth = 10
+            //paddedDepth = 16
             //padding = 3
             //starting index = 3 (pads are 0 1 2)
             //ending index = 6 (pads are 7 8 9)
             //paddedDepth - padding = 7
-            if (d >= paddingDepth && d < paddedDepth - paddingDepth)
+            if (d >= paddingDepth && d < inputDepth + paddingDepth)
             {
                 for (int r = paddingRow; r < inputRow + paddingRow; r++) {
                     for (int c = paddingCol; c < inputCol + paddingCol; c++) {
+                        System.out.printf("%d %d %d",d,r,c);
                         paddedInput[d].set(r, c, input[d].get(r, c));
                     }
                 }
