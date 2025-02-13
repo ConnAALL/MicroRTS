@@ -58,6 +58,7 @@ public class SSVDEvaluation extends WeightedEvaluation{
     }
     public double evaluateSSVD(double[][][] obs)
     {
+        System.out.println("SSVDEvaluation::evaluateSSVD::START");
         // Convert to SimpleMatrix array
         SimpleMatrix[] inputTensor = TensorMath.convertToMatrices(obs);
 
@@ -89,7 +90,7 @@ public class SSVDEvaluation extends WeightedEvaluation{
         SimpleMatrix U = svd.getU();
         SimpleMatrix S = svd.getW(); // Diagonal matrix of singular values
         SimpleMatrix V = svd.getV();
-
+        System.out.println("SSVDEvaluation::evaluateSSVD::MID");
         // Apply QR decomposition to stabilize U and Vh
         QRDecomposition<DMatrixRMaj> decomposer = DecompositionFactory_DDRM.qr();
         DMatrixRMaj U_d = U.getMatrix();
@@ -129,6 +130,7 @@ public class SSVDEvaluation extends WeightedEvaluation{
             "Invalid output size for mcts evaluation. Expected output of 1x1, got output of %dx$d. Weight matrix shapes are %dx%d %dx%d %dx%d",
                 rx, ry, w1r, w1c, w2r, w2c, wOr, wOc);
         // Output will always be a single value
+        System.out.println("SSVDEvaluation::evaluateSSVD::END");
         return result.getData()[0];
     }
     
