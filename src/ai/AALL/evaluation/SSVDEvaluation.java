@@ -60,7 +60,7 @@ public class SSVDEvaluation extends WeightedEvaluation{
     }
     public double evaluateSSVD(double[][][] obs)
     {
-        System.out.println("SSVDEvaluation::evaluateSSVD::START");
+        //System.out.println("SSVDEvaluation::evaluateSSVD::START");
         // Convert to SimpleMatrix array
         SimpleMatrix[] inputTensor = TensorMath.convertToMatrices(obs);
         //System.out.println(Arrays.deepToString(obs));
@@ -70,7 +70,7 @@ public class SSVDEvaluation extends WeightedEvaluation{
 
         // Process features
         //SimpleMatrix[] processedFeatures = TensorMath.processFeatures(inputTensor, featureSizes);
-        System.out.printf("conv size %d %d %d\n", inputTensor.length, inputTensor[0].getNumRows(), inputTensor[0].getNumCols());
+        //System.out.printf("conv size %d %d %d\n", inputTensor.length, inputTensor[0].getNumRows(), inputTensor[0].getNumCols());
         // Apply 3D convolutions
         // SimpleMatrix convolved = TensorMath.applyConv3D(inputConcat, 4, 2); // First conv (1,1,4) with stride (1,1,2), padding (0,0,2)
         // convolved = TensorMath.applyConv3D(convolved, 4, 2);
@@ -82,15 +82,15 @@ public class SSVDEvaluation extends WeightedEvaluation{
         int[] s1 = { 2, 1, 1 };
         int[] p1 = { 2, 0, 0 };
         SimpleMatrix[] convolved = TensorMath.conv3D(inputTensor, k1, s1, p1);
-        System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(),
+        //System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(),
                 convolved[0].getNumCols());
         
         convolved = TensorMath.conv3D(convolved, k1, s1, p1);
-        System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(),
+        //System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(),
                 convolved[0].getNumCols());
         
         convolved = TensorMath.conv3D(convolved, k1, s1, p1);
-        System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(),
+        //System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(),
                 convolved[0].getNumCols());
         
         // int[] k2 = { 1, 1, 2 };
@@ -100,7 +100,7 @@ public class SSVDEvaluation extends WeightedEvaluation{
         int[] s2 = { 1, 1, 1 };
         int[] p2 = { 0, 0, 0 };
         convolved = TensorMath.conv3D(convolved, k2, s2, p2);
-        System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(), convolved[0].getNumCols());
+        //System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(), convolved[0].getNumCols());
         SimpleMatrix flattened = TensorMath.squeeze(convolved);
         // Compute Singular Value Decomposition
         SimpleSVD<SimpleMatrix> svd = flattened.svd();
@@ -109,7 +109,7 @@ public class SSVDEvaluation extends WeightedEvaluation{
         SimpleMatrix U = svd.getU();
         SimpleMatrix S = svd.getW(); // Diagonal matrix of singular values
         SimpleMatrix V = svd.getV();
-        System.out.println("SSVDEvaluation::evaluateSSVD::MID");
+        //System.out.println("SSVDEvaluation::evaluateSSVD::MID");
         // Apply QR decomposition to stabilize U and Vh
         QRDecomposition<DMatrixRMaj> decomposer = DecompositionFactory_DDRM.qr();
         DMatrixRMaj U_d = U.getMatrix();
@@ -149,7 +149,7 @@ public class SSVDEvaluation extends WeightedEvaluation{
             "Invalid output size for mcts evaluation. Expected output of 1x1, got output of %dx$d. Weight matrix shapes are %dx%d %dx%d %dx%d",
                 rx, ry, w1r, w1c, w2r, w2c, wOr, wOc);
         // Output will always be a single value
-        System.out.println("SSVDEvaluation::evaluateSSVD::END");
+        //System.out.println("SSVDEvaluation::evaluateSSVD::END");
         return result.getData()[0];
     }
     
