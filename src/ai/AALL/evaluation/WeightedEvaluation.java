@@ -3,27 +3,23 @@ package ai.AALL.evaluation;
 import ai.AALL.math.TensorMath;
 import ai.evaluation.EvaluationFunction;
 
+import org.ejml.data.DMatrixRMaj;
 import org.ejml.simple.SimpleMatrix;
 
 import rts.GameState;
 
-public class WeightedEvaluation extends EvaluationFunction {
+public abstract class WeightedEvaluation extends EvaluationFunction {
     protected float[] weights;
-
+    public abstract void parseWeights();
     public void setWeight(float[] _weights)
     {
         weights = _weights;
+        double[] doubleweights = new double[weights.length];
+        for (int i = 0; i < weights.length; i++) {
+            doubleweights[i] = (double) weights[i];
+        }
+        parseWeights();
     }
-
-    @Override
-    public float upperBound(GameState gs) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'upperBound'");
-    }
-
-    @Override
-    public float evaluate(int maxplayer, int minplayer, GameState gs) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
-    }
+    
+    
 }

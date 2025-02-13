@@ -30,6 +30,11 @@ public class SSVDEvaluation extends WeightedEvaluation{
         int output = 1; //Using continuous output for MCTS
         ssvd = new SSVD(inputW, inputH, output, new int[] { 2, 2 });
         System.out.println("Started initializing SSVDEvaluation 1 ");
+
+    }
+    @Override
+    public void parseWeights()
+    {
         double[] doubleweights = new double[weights.length];
         for (int i = 0; i < weights.length; i++) {
             doubleweights[i] = (double) weights[i];
@@ -48,7 +53,6 @@ public class SSVDEvaluation extends WeightedEvaluation{
         weightsO = new DMatrixRMaj(weightTensors[2][0]);
         System.out.println("Started initializing SSVDEvaluation END ");
     }
-
     public double evaluateSSVD(double[][][] obs)
     {
         // Convert to SimpleMatrix array
