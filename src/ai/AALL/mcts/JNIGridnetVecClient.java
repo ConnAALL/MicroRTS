@@ -120,7 +120,6 @@ public class JNIGridnetVecClient {
         }
         clients = new JNIGridnetClientMCTS[a_num_envs];
         // initialize storage
-        Response r = new JNIGridnetClientMCTS(a_rfs, a_micrortsPath, mapPaths[0], new PassiveAI(a_utt), a_utt, partialObs).reset(0);
         for (int i = 0; i < clients.length; i++) {
             System.out.printf("a_num_envs %d\n", a_num_envs);
             System.out.printf("mapPaths[a_num_selfplayenvs+i] %s\n ", mapPaths[a_num_selfplayenvs + i]);
@@ -138,7 +137,8 @@ public class JNIGridnetVecClient {
             assert a_utt != null : "a_utt is null";
             clients[i] = new JNIGridnetClientMCTS(a_rfs, a_micrortsPath, mapPaths[a_num_selfplayenvs+i], a_ai2s[i], a_utt, partialObs);
         }
-
+        
+        Response r = new JNIGridnetClientMCTS(a_rfs, a_micrortsPath, mapPaths[0], new PassiveAI(a_utt), a_utt, partialObs).reset(0);
         
         int s1 = a_num_selfplayenvs + a_num_envs;
         int s2 = r.observation.length; 
