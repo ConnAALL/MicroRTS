@@ -53,7 +53,7 @@ public class SSVDEvaluation extends WeightedEvaluation{
             weights2[i] = new DMatrixRMaj(weightTensors[1][i]);  // Initialize weights1
         }
         weightsO = new DMatrixRMaj(weightTensors[2][0]);
-        System.out.println("SSVDEvaluation::parseWeights");
+        System.out.println("SSVDEvaluation::parseWeights::END");
         //System.out.println("Started initializing SSVDEvaluation END ");
     }
     public double evaluateSSVD(double[][][] obs)
