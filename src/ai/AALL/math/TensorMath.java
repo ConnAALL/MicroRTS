@@ -243,14 +243,14 @@ public class TensorMath {
             //paddedDepth - padding = 7
             if (d >= paddingDepth && d < paddedDepth - paddingDepth)
             {
-                for (int r = 0; r < inputRow; r++) {
-                    for (int c = 0; c < inputCol; c++) {
-                        paddedInput[d].set(r + paddedRow, c + paddedCol, input[d].get(r, c));
+                for (int r = paddingRow; r < inputRow + paddingRow; r++) {
+                    for (int c = paddingCol; c < inputCol + paddingCol; c++) {
+                        paddedInput[d].set(r, c, input[d].get(r, c));
                     }
                 }
             }
         }
-        
+        System.out.printf("\na");
         // Calculate output dimensions
         int outDepth = (paddedDepth - kernelDepth) / strideDepth + 1;
         int outRow = (paddedRow - kernelRow) / strideRow + 1;
