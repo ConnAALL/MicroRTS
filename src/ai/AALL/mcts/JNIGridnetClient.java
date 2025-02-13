@@ -42,6 +42,7 @@ public class JNIGridnetClient {
     public RewardFunctionInterface[] rfs;
     String micrortsPath;
     public String mapPath;
+    public ModelledEvaluationMCTS ai1;
     public AI ai2;
     UnitTypeTable utt;
     public boolean partialObs = false;
@@ -55,7 +56,6 @@ public class JNIGridnetClient {
     public int renderTheme = PhysicalGameStatePanel.COLORSCHEME_WHITE;
     public int maxAttackRadius;
     PhysicalGameStateJFrame w;
-    public ModelledEvaluationMCTS ai1;
 
     // Storage
     
@@ -160,11 +160,6 @@ public class JNIGridnetClient {
         DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
         return data.getData();
     }
-    
-    public void setMCTSEvalWeights(float[] weights)
-    {
-        ai1.setWeight(weights);
-    }
 
     public Response gameStep(int player) throws Exception {
         if (partialObs) {
@@ -264,8 +259,13 @@ public class JNIGridnetClient {
     }
 
     public void close() throws Exception {
-        if (w!=null) {
-            w.dispose();    
+        if (w != null) {
+            w.dispose();
         }
+    }
+    
+    public void setMCTSEvalWeights(float[] weights)
+    {
+        ai1.setWeight(weights);
     }
 }

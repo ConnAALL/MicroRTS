@@ -193,6 +193,7 @@ public class JNIGridnetVecClient {
         
         for (int i = 0; i < selfPlayClients.length; i++) {
             selfPlayClients[i].reset();
+            selfPlayClients[i].setMCTSEvalWeights(chromosome);
             rs[i*2] = selfPlayClients[i].getResponse(0);
             rs[i*2+1] = selfPlayClients[i].getResponse(1);
         }

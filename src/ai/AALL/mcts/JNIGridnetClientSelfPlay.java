@@ -47,7 +47,7 @@ public class JNIGridnetClientSelfPlay {
 
     // Internal State
     PhysicalGameStateJFrame w;
-    public JNIInterface[] ais = new JNIInterface[2];	// These AIs won't actually play: just convert action formats for us
+    public ModelledEvaluationMCTS[] ais = new ModelledEvaluationMCTS[2];	// These AIs won't actually play: just convert action formats for us
     public PhysicalGameState pgs;
     public GameState gs;
     public GameState[] playergs = new GameState[2];
@@ -129,7 +129,8 @@ public class JNIGridnetClientSelfPlay {
 
         // initialize storage
         for (int i = 0; i < numPlayers; i++) {
-            ais[i] = new JNIAI(100, 0, utt);
+            //ais[i] = new JNIAI(100, 0, utt);
+            ais[i] = new ModelledEvaluationMCTS(utt);
             masks[i] = new int[pgs.getHeight()][pgs.getWidth()][1+6+4+4+4+4+utt.getUnitTypes().size()+maxAttackRadius*maxAttackRadius];
             rewards[i] = new double[rfs.length];
             dones[i] = new boolean[rfs.length];
@@ -163,7 +164,7 @@ public class JNIGridnetClientSelfPlay {
             if (partialObs) {
                 playergs[i] = new PartiallyObservableGameState(gs, i);
             }
-            pas[i] = i == 0 ? ais[i].getAction(i, playergs[0], action1) : ais[i].getAction(i, playergs[1], action2);
+            pas[i] = i == 0 ? ais[i].getAction(i, playergs[0]) : ais[i].getAction(i, playergs[1]);
             gs.issueSafe(pas[i]);
             te.addPlayerAction(pas[i].clone());
         }
@@ -251,8 +252,15 @@ public class JNIGridnetClientSelfPlay {
     }
 
     public void close() throws Exception {
-        if (w!=null) {
-            w.dispose();    
+        if (w != null) {
+            w.dispose();
+        }
+    }
+
+    public void setMCTSEvalWeights(float[] weights)
+    {
+        for (int i = 0; i < numPlayers; i++) {
+            ais[i].setWeight(weights);
         }
     }
 }

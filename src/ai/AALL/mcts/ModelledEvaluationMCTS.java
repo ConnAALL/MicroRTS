@@ -148,7 +148,7 @@ public class ModelledEvaluationMCTS extends AIWithComputationBudget implements I
         }
     }
     
-    public int[][][] getObservation(GameState gs){
+    public int[][][] getObservation(final int player, GameState gs){
         return gs.getVectorObservation(player);
     }
     
