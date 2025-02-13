@@ -117,13 +117,14 @@ public class JNIGridnetClientMCTS {
      */
     public JNIGridnetClientMCTS(RewardFunctionInterface[] a_rfs, String a_micrortsPath, String a_mapPath, AI a_ai2,
             UnitTypeTable a_utt, boolean partial_obs) throws Exception {
-        System.out.printf("Started initializing  JNIGridnetClientMCTS");
+        System.out.println("Started initializing  JNIGridnetClientMCTS");
         micrortsPath = a_micrortsPath;
         mapPath = a_mapPath;
         rfs = a_rfs;
         utt = a_utt;
         partialObs = partial_obs;
         maxAttackRadius = utt.getMaxAttackRange() * 2 + 1;
+        System.out.println("Started initializing  JNIGridnetClientMCTS START");
         ai1 = new ModelledEvaluationMCTS(utt);
         ai2 = a_ai2;
         if (ai2 == null) {
@@ -132,13 +133,14 @@ public class JNIGridnetClientMCTS {
         if (micrortsPath.length() != 0) {
             this.mapPath = Paths.get(micrortsPath, mapPath).toString();
         }
-
+        System.out.println("Started initializing  JNIGridnetClientMCTS MIDPOINT");
         pgs = PhysicalGameState.load(mapPath, utt);
 
         // initialize storage
         masks = new int[pgs.getHeight()][pgs.getWidth()][1+6+4+4+4+4+utt.getUnitTypes().size()+maxAttackRadius*maxAttackRadius];
         rewards = new double[rfs.length];
         dones = new boolean[rfs.length];
+        System.out.println("Started initializing  JNIGridnetClientMCTS END");
         response = new Response(null, null, null, null);
         System.out.printf("Finished initializing  JNIGridnetClientMCTS");
     }
