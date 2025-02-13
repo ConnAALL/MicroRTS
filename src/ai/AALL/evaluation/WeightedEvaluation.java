@@ -13,6 +13,7 @@ public abstract class WeightedEvaluation extends EvaluationFunction {
     public abstract void parseWeights();
     public void setWeight(float[] _weights)
     {
+        System.out.println("WeightedEvaluation::setWeight");
         weights = _weights;
         double[] doubleweights = new double[weights.length];
         for (int i = 0; i < weights.length; i++) {
