@@ -141,11 +141,7 @@ public class JNIGridnetVecClient {
         Response r = new JNIGridnetClientMCTS(a_rfs, a_micrortsPath, mapPaths[0], new PassiveAI(a_utt), a_utt, partialObs).reset(0);
         
         int s1 = a_num_selfplayenvs + a_num_envs;
-        int s2 = r.observation.length; 
-        int s3 = r.observation[0].length;
-        int s4 = r.observation[0][0].length;
         masks = new int[s1][][][];
-        observation = new int[s1][s2][s3][s4];
         reward = new double[s1][rfs.length];
         done = new boolean[s1][rfs.length];
         terminalReward1 = new double[rfs.length];
