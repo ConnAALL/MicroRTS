@@ -120,9 +120,9 @@ public class JNIGridnetVecClient {
         }
         clients = new JNIGridnetClient[a_num_envs];
         for (int i = 0; i < clients.length; i++) {
-            System.out.printf("a_num_envs $d\n", a_num_envs);
-            System.out.printf("mapPaths[a_num_selfplayenvs+i] $s\n ", mapPaths[a_num_selfplayenvs + i]);
-            System.out.printf("a_ai2s.length $d\n", a_ai2s.length);
+            System.out.printf("a_num_envs %d\n", a_num_envs);
+            System.out.printf("mapPaths[a_num_selfplayenvs+i] %s\n ", mapPaths[a_num_selfplayenvs + i]);
+            System.out.printf("a_ai2s.length %d\n", a_ai2s.length);
             clients[i] = new JNIGridnetClient(a_rfs, a_micrortsPath, mapPaths[a_num_selfplayenvs+i], a_ai2s[i], a_utt, partialObs);
         }
 
