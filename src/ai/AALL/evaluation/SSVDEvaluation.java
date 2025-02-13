@@ -24,12 +24,12 @@ public class SSVDEvaluation extends WeightedEvaluation{
 
     public SSVDEvaluation()
     {
-        System.out.println("Started initializing SSVDEvaluation");
+        //System.out.println("Started initializing SSVDEvaluation");
         int inputW = 16;
         int inputH = 16;
         int output = 1; //Using continuous output for MCTS
         ssvd = new SSVD(inputW, inputH, output, new int[] { 2, 2 });
-        System.out.println("Started initializing SSVDEvaluation 1 ");
+        //System.out.println("Started initializing SSVDEvaluation 1 ");
 
     }
     @Override
@@ -39,9 +39,9 @@ public class SSVDEvaluation extends WeightedEvaluation{
         for (int i = 0; i < weights.length; i++) {
             doubleweights[i] = (double) weights[i];
         }
-        System.out.println("Started initializing SSVDEvaluation 2 ");
+        //System.out.println("Started initializing SSVDEvaluation 2 ");
         double[][][][] weightTensors = ssvd.chromosomeToWeights(doubleweights);
-        System.out.println("Started initializing SSVDEvaluation 3 ");
+        //System.out.println("Started initializing SSVDEvaluation 3 ");
         weights1 = new DMatrixRMaj[weightTensors[0].length];
         for (int i = 0; i < weightTensors[0].length; i++) {
             weights1[i] = new DMatrixRMaj(weightTensors[0][i]);  // Initialize weights1
@@ -51,7 +51,7 @@ public class SSVDEvaluation extends WeightedEvaluation{
             weights1[i] = new DMatrixRMaj(weightTensors[1][i]);  // Initialize weights1
         }
         weightsO = new DMatrixRMaj(weightTensors[2][0]);
-        System.out.println("Started initializing SSVDEvaluation END ");
+        //System.out.println("Started initializing SSVDEvaluation END ");
     }
     public double evaluateSSVD(double[][][] obs)
     {
