@@ -24,6 +24,7 @@ public class SSVDEvaluation extends WeightedEvaluation{
 
     public SSVDEvaluation()
     {
+        System.out.println("Started initializing SSVDEvaluation");
         int inputW = 16;
         int inputH = 16;
         int output = 1; //Using continuous output for MCTS

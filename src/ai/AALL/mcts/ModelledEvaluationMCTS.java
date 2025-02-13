@@ -69,7 +69,8 @@ public class ModelledEvaluationMCTS extends AIWithComputationBudget implements I
         this(100,-1,100,10,
              0.3f, 0.0f, 0.4f,
              new RandomBiasedAI(),
-             new SSVDEvaluation(), true);
+                new SSVDEvaluation(), true);
+        System.out.println("Done initializing ModelledEvaluationMCTS");
     }
     
     public ModelledEvaluationMCTS(int available_time, int max_playouts, int lookahead, int max_depth, 
