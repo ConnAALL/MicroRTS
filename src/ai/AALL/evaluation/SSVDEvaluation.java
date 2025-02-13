@@ -61,13 +61,13 @@ public class SSVDEvaluation extends WeightedEvaluation{
         System.out.println("SSVDEvaluation::evaluateSSVD::START");
         // Convert to SimpleMatrix array
         SimpleMatrix[] inputTensor = TensorMath.convertToMatrices(obs);
-
+        System.out.printf("conv size %d", inputTensor.length, inputTensor[0].getNumRows(), inputTensor[0].getNumCols());
         // Feature sizes as in PyTorch
         //int[] featureSizes = {5, 5, 3, 8, 6, 2}; //10 11 8 29
 
         // Process features
         SimpleMatrix[] processedFeatures = TensorMath.processFeatures(inputTensor, featureSizes);
-
+        System.out.printf("conv size %d", processedFeatures.length, processedFeatures[0].getNumRows(), processedFeatures[0].getNumCols());
         // Apply 3D convolutions
         // SimpleMatrix convolved = TensorMath.applyConv3D(inputConcat, 4, 2); // First conv (1,1,4) with stride (1,1,2), padding (0,0,2)
         // convolved = TensorMath.applyConv3D(convolved, 4, 2);
