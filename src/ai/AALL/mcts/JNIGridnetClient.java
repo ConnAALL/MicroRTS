@@ -9,8 +9,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import ai.core.AI;
-import ai.core.InterruptibleAI;
-import ai.jni.JNIInterface;
 import ai.jni.Response;
 import ai.reward.RewardFunctionInterface;
 import gui.PhysicalGameStateJFrame;
@@ -263,7 +261,7 @@ public class JNIGridnetClient {
             w.dispose();
         }
     }
-    
+
     public void setMCTSEvalWeights(float[] weights)
     {
         ai1.setWeight(weights);

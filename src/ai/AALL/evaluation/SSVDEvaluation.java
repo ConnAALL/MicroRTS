@@ -1,5 +1,6 @@
 package ai.AALL.evaluation;
 
+import java.lang.Exception;
 import org.ejml.simple.SimpleMatrix;
 import org.ejml.simple.SimpleSVD;
 import org.ejml.data.DMatrix;
@@ -104,6 +105,18 @@ public class SSVDEvaluation extends WeightedEvaluation{
 
         // Final multiplication with weightsO and Vh_stable
         result = TensorMath.multiply(weightsO, TensorMath.flatten(TensorMath.multiply(result, V_stable)));
+        
+        int rx = result.getNumRows();
+        int ry = result.getNumCols();
+        int w1r = weights1[0].getNumRows();
+        int w1c = weights1[0].getNumCols();
+        int w2r = weights2[0].getNumRows();
+        int w2c = weights2[0].getNumCols();
+        int wOr = weightsO.getNumRows();
+        int wOc = weightsO.getNumCols();
+        assert result.getNumRows() == 1 && result.getNumCols() == 1 : String.format(
+            "Invalid output size for mcts evaluation. Expected output of 1x1, got output of %dx$d. Weight matrix shapes are %dx%d %dx%d %dx%d",
+                rx, ry, w1r, w1c, w2r, w2c, wOr, wOc);
         // Output will always be a single value
         return result.getData()[0];
     }
