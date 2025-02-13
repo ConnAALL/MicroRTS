@@ -115,7 +115,9 @@ public class JNIGridnetClientMCTS {
      * @param partial_obs
      * @throws Exception
      */
-    public JNIGridnetClientMCTS(RewardFunctionInterface[] a_rfs, String a_micrortsPath, String a_mapPath, AI a_ai2, UnitTypeTable a_utt, boolean partial_obs) throws Exception{
+    public JNIGridnetClientMCTS(RewardFunctionInterface[] a_rfs, String a_micrortsPath, String a_mapPath, AI a_ai2,
+            UnitTypeTable a_utt, boolean partial_obs) throws Exception {
+        System.out.printf("Started initializing  JNIGridnetClientMCTS");
         micrortsPath = a_micrortsPath;
         mapPath = a_mapPath;
         rfs = a_rfs;
@@ -138,6 +140,7 @@ public class JNIGridnetClientMCTS {
         rewards = new double[rfs.length];
         dones = new boolean[rfs.length];
         response = new Response(null, null, null, null);
+        System.out.printf("Finished initializing  JNIGridnetClientMCTS");
     }
 
     public byte[] render(boolean returnPixels) throws Exception {
