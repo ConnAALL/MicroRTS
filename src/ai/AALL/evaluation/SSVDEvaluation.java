@@ -82,11 +82,17 @@ public class SSVDEvaluation extends WeightedEvaluation{
         int[] s1 = { 2, 1, 1 };
         int[] p1 = { 2, 0, 0 };
         SimpleMatrix[] convolved = TensorMath.conv3D(inputTensor, k1, s1, p1);
-        System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(), convolved[0].getNumCols());
+        System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(),
+                convolved[0].getNumCols());
+        
         convolved = TensorMath.conv3D(convolved, k1, s1, p1);
-        System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(), convolved[0].getNumCols());
+        System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(),
+                convolved[0].getNumCols());
+        
         convolved = TensorMath.conv3D(convolved, k1, s1, p1);
-        System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(), convolved[0].getNumCols());
+        System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(),
+                convolved[0].getNumCols());
+        
         // int[] k2 = { 1, 1, 2 };
         // int[] s2 = { 1, 1, 1 };
         // int[] p2 = { 0, 0, 0 };

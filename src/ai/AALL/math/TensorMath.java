@@ -254,6 +254,7 @@ public class TensorMath {
         int outDepth = (paddedDepth - kernelDepth) / strideDepth + 1;
         int outRow = (paddedRow - kernelRow) / strideRow + 1;
         int outCol = (paddedCol - kernelCol) / strideCol + 1;
+        System.out.printf("%d %d %d", outDepth, outRow, outCol);
         
         // Create output tensor
         SimpleMatrix[] output = new SimpleMatrix[outDepth];
