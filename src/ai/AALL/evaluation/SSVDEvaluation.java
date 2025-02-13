@@ -9,6 +9,8 @@ import org.ejml.dense.row.factory.DecompositionFactory_DDRM;
 import org.ejml.dense.row.mult.MatrixMatrixMult_DDRM;
 import org.ejml.interfaces.decomposition.QRDecomposition;
 import java.lang.Math;
+import java.util.Arrays;
+
 import ai.AALL.math.TensorMath;
 import ai.AALL.math.SSVD;
 import rts.GameState;
@@ -61,7 +63,7 @@ public class SSVDEvaluation extends WeightedEvaluation{
         System.out.println("SSVDEvaluation::evaluateSSVD::START");
         // Convert to SimpleMatrix array
         SimpleMatrix[] inputTensor = TensorMath.convertToMatrices(obs);
-        System.out.println(obs);
+        System.out.println(Arrays.deepToString(obs));
         System.out.printf("conv size %d %d %d\n", inputTensor.length, inputTensor[0].getNumRows(), inputTensor[0].getNumCols());
         // Feature sizes as in PyTorch
         //int[] featureSizes = {5, 5, 3, 8, 6, 2}; //10 11 8 29
