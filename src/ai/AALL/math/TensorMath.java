@@ -245,7 +245,7 @@ public class TensorMath {
             {
                 for (int r = 0; r < inputRow; r++) {
                     for (int c = 0; c < inputCol; c++) {
-                        paddedInput[d + paddingDepth].set(r + paddedRow, c + paddedCol, input[d].get(r, c));
+                        paddedInput[d].set(r + paddedRow, c + paddedCol, input[d].get(r, c));
                     }
                 }
             }
