@@ -40,7 +40,7 @@ public class TensorMath {
     // Converts a 3D array to an array of 2D SimpleMatrix (each channel is a SimpleMatrix)
     public static SimpleMatrix[] convertToMatrices(double[][][] tensor) {
         //int depth = tensor[0][0].length;
-        System.out.printf("convertToMatrices:: %d %d %d\n", tensor.length, tensor[0].length, tensor[0][0].length); // 6 16 16
+        //System.out.printf("convertToMatrices:: %d %d %d\n", tensor.length, tensor[0].length, tensor[0][0].length); // 6 16 16
         SimpleMatrix[] matrices = new SimpleMatrix[tensor.length];
         for (int k = 0; k < tensor.length; k++)
         {
