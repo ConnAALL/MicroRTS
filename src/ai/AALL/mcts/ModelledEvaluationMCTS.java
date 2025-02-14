@@ -66,7 +66,7 @@ public class ModelledEvaluationMCTS extends AIWithComputationBudget implements I
     
     
     public ModelledEvaluationMCTS(UnitTypeTable utt) {
-        this(100,-1,100,10,
+        this(300,-1,100,10,
              0.3f, 0.0f, 0.4f,
              new RandomBiasedAI(),
                 new SSVDEvaluation(), true);
