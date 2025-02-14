@@ -24,6 +24,9 @@ public class SSVDEvaluation extends WeightedEvaluation{
     private DMatrixRMaj[] weights2;
     private DMatrixRMaj weightsO;
 
+    private SimpleMatrix[] conv1;
+    private SimpleMatrix[] conv2;
+
     public SSVDEvaluation()
     {
         //System.out.println("Started initializing SSVDEvaluation");
@@ -32,7 +35,10 @@ public class SSVDEvaluation extends WeightedEvaluation{
         int output = 1; //Using continuous output for MCTS
         ssvd = new SSVD(inputW, inputH, output, new int[] { 2, 2 });
         //System.out.println("Started initializing SSVDEvaluation 1 ");
-
+        int[] k1 = { 4, 1, 1 };
+        int[] k2 = { 2, 1, 1 };
+        conv1 = TensorMath.generateKernel3D(k1);
+        conv2 = TensorMath.generateKernel3D(k2);
     }
     @Override
     public void parseWeights()
@@ -78,25 +84,24 @@ public class SSVDEvaluation extends WeightedEvaluation{
         // int[] k1 = { 1, 1, 4 };
         // int[] s1 = { 1, 1, 2 };
         // int[] p1 = { 0, 0, 2 };
-        int[] k1 = { 4, 1, 1 };
+        
         int[] s1 = { 2, 1, 1 };
         int[] p1 = { 2, 0, 0 };
-        SimpleMatrix[] convolved = TensorMath.conv3D(inputTensor, k1, s1, p1);
+        SimpleMatrix[] convolved = TensorMath.conv3D(inputTensor, conv1, s1, p1);
         //System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(),convolved[0].getNumCols());
         
-        convolved = TensorMath.conv3D(convolved, k1, s1, p1);
+        convolved = TensorMath.conv3D(convolved, conv1, s1, p1);
         //System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(),convolved[0].getNumCols());
         
-        convolved = TensorMath.conv3D(convolved, k1, s1, p1);
+        convolved = TensorMath.conv3D(convolved, conv1, s1, p1);
         //System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(),convolved[0].getNumCols());
         
         // int[] k2 = { 1, 1, 2 };
         // int[] s2 = { 1, 1, 1 };
         // int[] p2 = { 0, 0, 0 };
-        int[] k2 = { 2, 1, 1 };
         int[] s2 = { 1, 1, 1 };
         int[] p2 = { 0, 0, 0 };
-        convolved = TensorMath.conv3D(convolved, k2, s2, p2);
+        convolved = TensorMath.conv3D(convolved, conv2, s2, p2);
         //System.out.printf("conv size %d %d %d\n", convolved.length, convolved[0].getNumRows(), convolved[0].getNumCols());
         SimpleMatrix flattened = TensorMath.squeeze(convolved);
         // Compute Singular Value Decomposition

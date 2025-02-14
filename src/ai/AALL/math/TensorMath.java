@@ -219,12 +219,14 @@ public class TensorMath {
         return output;
     }
 
-    public static SimpleMatrix[] conv3D(SimpleMatrix[] input, int[] kernelSize, int[] stride, int[] padding) {
+    public static SimpleMatrix[] conv3D(SimpleMatrix[] input, SimpleMatrix[] kernel, int[] stride, int[] padding) {
         int inputDepth = input.length;
         int inputRow = input[0].getNumRows();
         int inputCol = input[0].getNumCols();
         
-        int kernelDepth = kernelSize[0];int kernelRow = kernelSize[1];int kernelCol = kernelSize[2];
+        int kernelDepth = kernel.length;
+        int kernelRow = kernel[0].getNumRows();
+        int kernelCol = kernel[0].getNumCols();
         int strideDepth = stride[0];int strideRow = stride[1];int strideCol = stride[2];
         int paddingDepth = padding[0];int paddingRow = padding[1];int paddingCol = padding[2];
 
@@ -261,7 +263,6 @@ public class TensorMath {
         
         // Create output tensor
         SimpleMatrix[] output = new SimpleMatrix[outDepth];
-        SimpleMatrix[] kernel = generateKernel3D(kernelSize);
         // Convolution operation
         for (int d = 0; d < outDepth; d++) {
             output[d] = new SimpleMatrix(outRow, outCol);
