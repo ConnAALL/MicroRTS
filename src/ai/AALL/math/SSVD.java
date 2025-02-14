@@ -38,7 +38,6 @@ public class SSVD {
         if (chromosome.length != expectedSize) {
             throw new IllegalArgumentException("Vector size must be " + expectedSize + ", but got " + chromosome.length);
         }
-        System.out.println("");
         // Convert chromosome to weights_1
         int size_1 = this.preSTensors * Math.min(this.inputSizeH, this.inputSizeW) * Math.min(this.inputSizeH, this.inputSizeW);
         double[][][] weights_1 = new double[this.preSTensors][Math.min(this.inputSizeH, this.inputSizeW)][Math.min(this.inputSizeH, this.inputSizeW)];
