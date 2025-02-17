@@ -66,9 +66,17 @@ public class ModelledEvaluationMCTS extends AIWithComputationBudget implements I
     
     
     public ModelledEvaluationMCTS(UnitTypeTable utt) {
-        this(300,-1,100,10,
-             0.3f, 0.0f, 0.4f,
-             new RandomBiasedAI(),
+        this(300, -1, 100, 10,
+                0.3f, 0.0f, 0.4f,
+                new RandomBiasedAI(),
+                new SSVDEvaluation(), true);
+        System.out.println("Done initializing ModelledEvaluationMCTS");
+    }
+    
+    public ModelledEvaluationMCTS(UnitTypeTable utt, int searchTime) {
+        this(searchTime, -1, 100, 10,
+                0.3f, 0.0f, 0.4f,
+                new RandomBiasedAI(),
                 new SSVDEvaluation(), true);
         System.out.println("Done initializing ModelledEvaluationMCTS");
     }

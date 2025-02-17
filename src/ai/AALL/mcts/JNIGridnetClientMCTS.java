@@ -116,7 +116,7 @@ public class JNIGridnetClientMCTS {
      * @throws Exception
      */
     public JNIGridnetClientMCTS(RewardFunctionInterface[] a_rfs, String a_micrortsPath, String a_mapPath, AI a_ai2,
-            UnitTypeTable a_utt, boolean partial_obs) throws Exception {
+            UnitTypeTable a_utt, boolean partial_obs, int searchTime) throws Exception {
         //System.out.println("Started initializing  JNIGridnetClientMCTS");
         micrortsPath = a_micrortsPath;
         mapPath = a_mapPath;
@@ -125,7 +125,7 @@ public class JNIGridnetClientMCTS {
         partialObs = partial_obs;
         maxAttackRadius = utt.getMaxAttackRange() * 2 + 1;
         //System.out.println("Started initializing  JNIGridnetClientMCTS START");
-        ai1 = new ModelledEvaluationMCTS(utt);
+        ai1 = new ModelledEvaluationMCTS(utt, searchTime);
         ai2 = a_ai2;
         if (ai2 == null) {
             throw new Exception("no ai2 was chosen");

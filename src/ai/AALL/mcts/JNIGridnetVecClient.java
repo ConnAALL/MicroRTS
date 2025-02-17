@@ -104,7 +104,7 @@ public class JNIGridnetVecClient {
      * @throws Exception
      */
     public JNIGridnetVecClient(int a_num_selfplayenvs, int a_num_envs, int a_max_steps, RewardFunctionInterface[] a_rfs, String a_micrortsPath, String[] a_mapPaths, 
-    		AI[] a_ai2s, UnitTypeTable a_utt, boolean partial_obs) throws Exception {
+    		AI[] a_ai2s, UnitTypeTable a_utt, boolean partial_obs, int mctsTime) throws Exception {
     	
         maxSteps = a_max_steps;
         utt = a_utt;
@@ -116,7 +116,7 @@ public class JNIGridnetVecClient {
         envSteps = new int[a_num_selfplayenvs + a_num_envs];
         selfPlayClients = new JNIGridnetClientSelfPlay[a_num_selfplayenvs/2];
         for (int i = 0; i < selfPlayClients.length; i++) {
-            selfPlayClients[i] = new JNIGridnetClientSelfPlay(a_rfs, a_micrortsPath, mapPaths[i*2], a_utt, partialObs);
+            selfPlayClients[i] = new JNIGridnetClientSelfPlay(a_rfs, a_micrortsPath, mapPaths[i*2], a_utt, partialObs, mctsTime);
         }
         clients = new JNIGridnetClientMCTS[a_num_envs];
         // initialize storage
@@ -126,10 +126,10 @@ public class JNIGridnetVecClient {
             assert mapPaths[a_num_selfplayenvs+i] != null : "mapPaths[a_num_selfplayenvs+i] is null";
             assert a_ai2s[i] != null : "a_ai2s[i] is null";
             assert a_utt != null : "a_utt is null";
-            clients[i] = new JNIGridnetClientMCTS(a_rfs, a_micrortsPath, mapPaths[a_num_selfplayenvs+i], a_ai2s[i], a_utt, partialObs);
+            clients[i] = new JNIGridnetClientMCTS(a_rfs, a_micrortsPath, mapPaths[a_num_selfplayenvs+i], a_ai2s[i], a_utt, partialObs, mctsTime);
         }
         
-        Response r = new JNIGridnetClientMCTS(a_rfs, a_micrortsPath, mapPaths[0], new PassiveAI(a_utt), a_utt, partialObs).reset(0);
+        Response r = new JNIGridnetClientMCTS(a_rfs, a_micrortsPath, mapPaths[0], new PassiveAI(a_utt), a_utt, partialObs, mctsTime).reset(0);
         
         int s1 = a_num_selfplayenvs + a_num_envs;
         masks = new int[s1][][][];
