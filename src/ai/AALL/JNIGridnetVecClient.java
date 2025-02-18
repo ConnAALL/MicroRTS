@@ -84,6 +84,7 @@ public class JNIGridnetVecClient {
     double[] terminalReward2;
     boolean[] terminalDone2;
 
+    
     /**
      * 
      * @param a_num_selfplayenvs Should be a multiple of 2. The number of
@@ -104,7 +105,7 @@ public class JNIGridnetVecClient {
      * @throws Exception
      */
     public JNIGridnetVecClient(int a_num_selfplayenvs, int a_num_envs, int a_max_steps, RewardFunctionInterface[] a_rfs, String a_micrortsPath, String[] a_mapPaths, 
-    		AI[] a_ai2s, UnitTypeTable a_utt, boolean partial_obs) throws Exception {
+    		AI[] a_ai2s, UnitTypeTable a_utt, boolean partial_obs, boolean _useSimpleAction) throws Exception {
     	
         maxSteps = a_max_steps;
         utt = a_utt;
@@ -116,15 +117,15 @@ public class JNIGridnetVecClient {
         envSteps = new int[a_num_selfplayenvs + a_num_envs];
         selfPlayClients = new JNIGridnetClientSelfPlay[a_num_selfplayenvs/2];
         for (int i = 0; i < selfPlayClients.length; i++) {
-            selfPlayClients[i] = new JNIGridnetClientSelfPlay(a_rfs, a_micrortsPath, mapPaths[i*2], a_utt, partialObs);
+            selfPlayClients[i] = new JNIGridnetClientSelfPlay(a_rfs, a_micrortsPath, mapPaths[i*2], a_utt, partialObs, _useSimpleAction);
         }
         clients = new JNIGridnetClient[a_num_envs];
         for (int i = 0; i < clients.length; i++) {
-            clients[i] = new JNIGridnetClient(a_rfs, a_micrortsPath, mapPaths[a_num_selfplayenvs+i], a_ai2s[i], a_utt, partialObs);
+            clients[i] = new JNIGridnetClient(a_rfs, a_micrortsPath, mapPaths[a_num_selfplayenvs+i], a_ai2s[i], a_utt, partialObs, _useSimpleAction);
         }
 
         // initialize storage
-        Response r = new JNIGridnetClient(a_rfs, a_micrortsPath, mapPaths[0], new PassiveAI(a_utt), a_utt, partialObs).reset(0);
+        Response r = new JNIGridnetClient(a_rfs, a_micrortsPath, mapPaths[0], new PassiveAI(a_utt), a_utt, partialObs, _useSimpleAction).reset(0);
         int s1 = a_num_selfplayenvs + a_num_envs;
         int s2 = r.observation.length; 
         int s3 = r.observation[0].length;
@@ -141,6 +142,11 @@ public class JNIGridnetVecClient {
         rs = new Response[s1];
     }
 
+    public JNIGridnetVecClient(int a_num_selfplayenvs, int a_num_envs, int a_max_steps, RewardFunctionInterface[] a_rfs, String a_micrortsPath, String[] a_mapPaths,
+            AI[] a_ai2s, UnitTypeTable a_utt, boolean partial_obs) throws Exception 
+    {
+        this(a_num_selfplayenvs, a_num_envs, a_max_steps, a_rfs, a_micrortsPath, a_mapPaths, a_ai2s, a_utt, partial_obs, false);
+    }
     /**
      * Constructor for Java-bot-only environments.
      * 

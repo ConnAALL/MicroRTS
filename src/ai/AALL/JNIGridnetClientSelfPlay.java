@@ -114,7 +114,7 @@ public class JNIGridnetClientSelfPlay {
      * @param partial_obs
      * @throws Exception
      */
-    public JNIGridnetClientSelfPlay(RewardFunctionInterface[] a_rfs, String a_micrortsPath, String a_mapPath, UnitTypeTable a_utt, boolean partial_obs) throws Exception{
+    public JNIGridnetClientSelfPlay(RewardFunctionInterface[] a_rfs, String a_micrortsPath, String a_mapPath, UnitTypeTable a_utt, boolean partial_obs, boolean _useSimpleAction) throws Exception{
         micrortsPath = a_micrortsPath;
         mapPath = a_mapPath;
         rfs = a_rfs;
@@ -129,7 +129,7 @@ public class JNIGridnetClientSelfPlay {
 
         // initialize storage
         for (int i = 0; i < numPlayers; i++) {
-            ais[i] = new JNIAI(100, 0, utt);
+            ais[i] = new JNIExpertAI(100, 0, utt, _useSimpleAction);
             masks[i] = new int[pgs.getHeight()][pgs.getWidth()][1+6+4+4+4+4+utt.getUnitTypes().size()+maxAttackRadius*maxAttackRadius];
             rewards[i] = new double[rfs.length];
             dones[i] = new boolean[rfs.length];
