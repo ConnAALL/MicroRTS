@@ -192,9 +192,18 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         //String errorString = "";
         System.out.println("Began parsing output");
         try {
-            assert action.length == 1 : "Model action vector height must be 1";
+            if (action.length != 1)
+            {
+                throw new Exception(String.format("Model action vector height must be 1 (%d != 1)", action.length));
+            }
             flatAction = action[0];
-            assert flatAction.length == 13 : "Model action vector does not match action count";
+            if (flatAction.length != 13)
+            {
+                throw new Exception(String.format("Model action vector does not match action count (%d != 13)", flatAction.length));
+            }
+            //assert action.length == 1 : "Model action vector height must be 1";
+            
+            //assert flatAction.length == 13 : "Model action vector does not match action count";
             //errorString += "Started Softmax\n";
             float[] soft = softmax(flatAction);
             //errorString += "Finished Softmax\n";
