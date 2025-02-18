@@ -38,6 +38,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
     int maxAttackRadius;
     protected HashMap<Unit, Boolean> workerTable;
     protected HashMap<Unit, Boolean> attackerTable;
+    protected HashMap<Integer, Integer> actionTable;
     boolean useSimple;
 
     public JNIExpertAI(int timeBudget, int iterationsBudget, UnitTypeTable a_utt, boolean _useSimple) {
@@ -45,6 +46,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         utt = a_utt;
         maxAttackRadius = utt.getMaxAttackRange() * 2 + 1;
         useSimple = _useSimple;
+        actionTable = new HashMap<Integer, Integer>(13);
     }
 
     @Override
@@ -176,6 +178,22 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         return pa;
     }
 
+    private void printActionDistribution()
+    {
+        int total = actionTable.values().stream().mapToInt(Integer::intValue).sum();
+        String msg = "";
+        for (Map.Entry<Integer, Integer> entry : actionTable.entrySet()) {
+            int key = entry.getKey();
+            int count = entry.getValue();
+            double percentage = (count * 100.0) / total;
+
+            // Display histogram-like representation
+            //int barLength = (int) (percentage / 2); // Scale for readability
+            //System.out.printf("%d: %s %.2f%%%n", key, "*".repeat(barLength), percentage);
+            msg += String.format("Action %d: %.2f% ", key, percentage);
+        }
+        System.out.println(msg);
+    }
     private PlayerAction getActionSimple(final int player, final GameState gs, int[][] action)
     {
         //System.out.println("Calculating Simple Action");
@@ -275,7 +293,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     if (coords != null)
                     {
                         UnitType ut = utt.getUnitType("Base");
-                        System.out.println("Got unit type Base");
+                        //System.out.println("Got unit type Base");
                         for(Unit u : workerTable.keySet())
                         {
                             if(u.getType().produces.contains(ut) && !isBuilding(u,gs)) // make sure the unit is not already building something
@@ -291,7 +309,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     if (coords != null)
                     {
                         UnitType ut = utt.getUnitType("Barracks");
-                        System.out.println("Got unit type Barracks");
+                        //System.out.println("Got unit type Barracks");
                         for (Unit u : workerTable.keySet()) {
                             if (u.getType().produces.contains(ut) && !isBuilding(u, gs)) // make sure the unit is not already building something
                             {
@@ -305,7 +323,16 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         } catch(Exception e)
         {
             System.out.println("Error while parsing model output: " + e.getMessage());
-            System.out.println(String.format("\t Agent action was: %d",agentAction));
+            System.out.println(String.format("\t Agent action was: %d", agentAction));
+        }
+        Integer record = actionTable.get(agentAction);
+        if (record == null)
+        {
+            actionTable.put(agentAction, 1);
+        }
+        else
+        {
+            actionTable.put(agentAction, record + 1);
         }
         try{
             //Auto Actions
@@ -608,8 +635,10 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
     @Override
     public void reset() {
         // TODO Auto-generated method stub
+        printActionDistribution();
         workerTable = new HashMap<Unit, Boolean>(30);
         attackerTable = new HashMap<Unit, Boolean>(30);
+        actionTable = new HashMap<Integer, Integer>(13);
     }
 
     @Override
