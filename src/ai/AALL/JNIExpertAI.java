@@ -96,16 +96,15 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         for (int i = 0; i < action.length; i++) {
             float n = scaled[i];
             float v = (float) Math.exp((double) n);
-            //System.out.println(String.format("\tn v %f %f", n, v));
             sum += v;
             scaled[i] = v;
         }
         if (sum == 0)
         {
+            System.err.println( "Softmax tried to divide by 0");
             //Division by 0
             return scaled;
         }
-        assert sum != 0.0 : "Softmax tried to divide by 0";
         for (int i = 0; i < scaled.length; i++) {
             scaled[i] = scaled[i] / sum;
         }
