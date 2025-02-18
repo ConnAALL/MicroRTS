@@ -180,12 +180,13 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         int agentAction = 0;
         List<Map.Entry<Unit, Boolean>> unitList;
         int[] coords;
+        System.out.println("before registering units");
         for (Unit u : pgs.getUnits()) {
-            if (u.getPlayer() == player)
-            {
+            if (u.getPlayer() == player) {
                 registerNewUnit(u);
             }
         }
+        System.out.println("after registering units");
         try {
             flatAction = action[0];
             assert action.length == 1 : "Model action vector height must be 1";
@@ -206,7 +207,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     for (Map.Entry<Unit, Boolean> entry : unitList) {
                         Unit u = entry.getKey();
                         if (entry.getValue() == false) {
-                            registerToTables(entry.getKey(), true);
+                            registerToTables(u, true);
                             break;
                         }
                     }
