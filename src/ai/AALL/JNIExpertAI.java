@@ -62,6 +62,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         return reward;
     }
 
+    //normalize logit to be between 0 and 1
     private float[] MinMax(final int[] action)
     {
         float[] out = new float[action.length];
@@ -82,7 +83,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         int range = max - min;
         for(int i=0;i<action.length;i++)
         {
-            out[i] = 2 * (action[i] - min) / (float) range - 1;
+            out[i] = (action[i] - min) / (float) range;
         }
         return out;
     }
@@ -104,6 +105,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             //Division by 0
             return scaled;
         }
+        assert sum != 0.0 : "Softmax tried to divide by 0";
         for (int i = 0; i < scaled.length; i++) {
             scaled[i] = scaled[i] / sum;
         }
