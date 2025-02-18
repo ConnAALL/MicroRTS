@@ -190,6 +190,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             }
         }
         String errorString = "";
+        System.out.println("Began parsing output");
         try {
             assert action.length == 1 : "Model action vector height must be 1";
             flatAction = action[0];
@@ -200,9 +201,10 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             agentAction = multinomial(soft);
             errorString += "Finished Multinomial\n";
             errorString += String.format("Agent action is %d\n", agentAction);
+            System.out.println("Finished parsing output");
         } catch(Exception e)
         {
-            e.printStackTrace();
+            //e.printStackTrace();
             System.out.println(errorString);
             System.out.println("Error while parsing model output: " + e.getMessage());
         }
