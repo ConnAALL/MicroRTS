@@ -194,6 +194,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             flatAction = action[0];
             assert action.length == 1 : "Model action vector height must be 1";
             assert flatAction.length == 13 : "Model action vector does not match action count";
+            errorString += "Started Softmax\n";
             float[] soft = softmax(flatAction);
             errorString += "Finished Softmax\n";
             agentAction = multinomial(soft);
