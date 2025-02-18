@@ -639,7 +639,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
     @Override
     public void reset() {
         // TODO Auto-generated method stub
-        printActionDistribution();
+        //printActionDistribution();
         workerTable = new HashMap<Unit, Boolean>(30);
         attackerTable = new HashMap<Unit, Boolean>(30);
         actionTable = new HashMap<Integer, Integer>(13);
