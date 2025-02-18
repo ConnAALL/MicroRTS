@@ -101,7 +101,8 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         }
         if (sum == 0)
         {
-            throw new RuntimeException(String.format("Division by 0"));
+            //Division by 0
+            return scaled;
         }
         for (int i = 0; i < scaled.length; i++) {
             scaled[i] = scaled[i] / sum;
