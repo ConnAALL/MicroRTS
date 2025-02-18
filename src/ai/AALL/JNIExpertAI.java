@@ -200,6 +200,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             //System.out.println(String.format("Agent action is %d", agentAction));
         } catch(Exception e)
         {
+            e.printStackTrace();
             System.out.println("Error while parsing model output: " + e.getMessage());
         }
         try{
