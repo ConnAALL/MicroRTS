@@ -218,7 +218,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         {
             //e.printStackTrace();
             //System.out.println(errorString);
-            System.out.println("Error while parsing model output: " + e.getMessage());
+            System.out.println("Error getting action from model: " + e.getMessage());
         }
         try{
             // These actions override previous action unless it's a building action
@@ -302,6 +302,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         } catch(Exception e)
         {
             System.out.println("Error while parsing model output: " + e.getMessage());
+            System.out.println(String.format("\t Agent action was: %d",agentAction));
         }
         try{
             //Auto Actions
