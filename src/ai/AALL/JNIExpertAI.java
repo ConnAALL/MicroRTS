@@ -317,7 +317,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     if (base == null) //find any base
                     {
                         for (Unit b : pgs.getUnits()) {
-                            if(b.getType().isStockpile)
+                            if(b.getType().isStockpile && b.getPlayer() == player)
                             {
                                 move(u, b.getX(), b.getY()); 
                             }
