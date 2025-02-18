@@ -190,7 +190,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             }
         }
         //String errorString = "";
-        System.out.println("Began parsing output");
+        //System.out.println("Began parsing output");
         try {
             if (action.length != 1)
             {
@@ -210,7 +210,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             agentAction = multinomial(soft);
             //errorString += "Finished Multinomial\n";
             //errorString += String.format("Agent action is %d\n", agentAction);
-            System.out.println("Finished parsing output");
+            //System.out.println("Finished parsing output");
         } catch (AssertionError ae)
         {
             System.out.println("Assertion Error: " + ae.getMessage());
