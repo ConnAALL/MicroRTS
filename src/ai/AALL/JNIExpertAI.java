@@ -234,16 +234,16 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     attackersToQuad(4, pgs, unitList);
                     break;
                 case 7: // build worker from random base
-                    trainUnit(pgs, "Worker");
+                    trainUnit(player, "Worker", pgs);
                     break;
                 case 8: // build light from random barrack
-                    trainUnit(pgs, "Light");
+                    trainUnit(player, "Light", pgs);
                     break;
                 case 9: // build heavy from random barrack
-                    trainUnit(pgs, "Heavy");
+                    trainUnit(player, "Heavy", pgs);
                     break;
                 case 10: // build ranged from random barrack
-                    trainUnit(pgs, "Ranged");
+                    trainUnit(player, "Ranged", pgs);
                     break;
                 case 11: // expand to nearest base that is (1. further than 5 tiles from current base) (2. has resource within 3 tiles)
                     coords = findExpansionLocation(pgs, 5);
@@ -364,12 +364,12 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         }
     }
 
-    private void trainUnit(PhysicalGameState pgs, String UnitTypeName)
+    private void trainUnit(final int player, final String UnitTypeName, PhysicalGameState pgs)
     {
         UnitType workerType = utt.getUnitType(UnitTypeName);
         Collections.shuffle(pgs.getUnits()); //random unit
         for (Unit u : pgs.getUnits()) {
-            if (u.getType().produces.contains(workerType)) {
+            if (u.getType().produces.contains(workerType) && u.getPlayer() == player) {
                 train(u, workerType);
                 break;
             }
