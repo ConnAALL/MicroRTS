@@ -174,7 +174,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
 
     private PlayerAction getActionSimple(final int player, final GameState gs, int[][] action)
     {
-        System.out.println("Calculating Simple Action");
+        //System.out.println("Calculating Simple Action");
         PhysicalGameState pgs = gs.getPhysicalGameState();
         int[] flatAction = null;
         int agentAction = 0;
@@ -190,6 +190,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             assert action.length == 1 : "Model action vector height must be 1";
             assert flatAction.length == 13 : "Model action vector does not match action count";
             agentAction = multinomial(softmax(flatAction));
+            System.out.println(String.format("Agent action is %d", agentAction));
         } catch(Exception e)
         {
             System.out.println("Error while parsing model output: " + e.getMessage());
