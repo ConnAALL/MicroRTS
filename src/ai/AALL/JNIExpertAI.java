@@ -65,7 +65,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
     //normalize logit to be between 0 and 1
     private float[] MinMax(final int[] action)
     {
-        System.out.println("Raw action:" + Arrays.toString(action));
+        //System.out.println("Raw action:" + Arrays.toString(action));
         float[] out = new float[action.length];
         int min = Integer.MAX_VALUE;
         for(int i=0;i<action.length;i++)
@@ -86,7 +86,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         {
             out[i] = (action[i] - min) / (float) range;
         }
-        System.out.println("normalized action:" + Arrays.toString(out));
+        //System.out.println("normalized action:" + Arrays.toString(out));
         return out;
     }
 
@@ -189,18 +189,20 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                 registerNewUnit(u);
             }
         }
+        String errorString = "";
         try {
             flatAction = action[0];
             assert action.length == 1 : "Model action vector height must be 1";
             assert flatAction.length == 13 : "Model action vector does not match action count";
             float[] soft = softmax(flatAction);
-            System.out.println( "Finished Softmax");
+            errorString += "Finished Softmax\n";
             agentAction = multinomial(soft);
-            System.out.println( "Finished Multinomial");
-            //System.out.println(String.format("Agent action is %d", agentAction));
+            errorString += "Finished Multinomial\n";
+            errorString += String.format("Agent action is %d\n", agentAction);
         } catch(Exception e)
         {
             e.printStackTrace();
+            System.out.println(errorString);
             System.out.println("Error while parsing model output: " + e.getMessage());
         }
         try{
