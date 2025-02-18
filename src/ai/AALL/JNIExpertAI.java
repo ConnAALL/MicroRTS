@@ -86,7 +86,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         {
             out[i] = (action[i] - min) / (float) range;
         }
-        System.out.println("normalized action:" + Arrays.toString(action));
+        System.out.println("normalized action:" + Arrays.toString(out));
         return out;
     }
 
