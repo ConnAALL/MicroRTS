@@ -190,9 +190,13 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             // Display histogram-like representation
             //int barLength = (int) (percentage / 2); // Scale for readability
             //System.out.printf("%d: %s %.2f%%%n", key, "*".repeat(barLength), percentage);
-            msg += String.format("Action %d: %.2f% ", key, percentage);
+            msg += String.format("Action %d: %.2f%% ", key, percentage);
         }
-        System.out.println(msg);
+        if (msg != "")
+        {
+            msg += "\n";
+        }
+        System.out.print(msg);
     }
     private PlayerAction getActionSimple(final int player, final GameState gs, int[][] action)
     {
