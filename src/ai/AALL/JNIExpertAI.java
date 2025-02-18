@@ -189,23 +189,26 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                 registerNewUnit(u);
             }
         }
-        String errorString = "";
+        //String errorString = "";
         System.out.println("Began parsing output");
         try {
             assert action.length == 1 : "Model action vector height must be 1";
             flatAction = action[0];
             assert flatAction.length == 13 : "Model action vector does not match action count";
-            errorString += "Started Softmax\n";
+            //errorString += "Started Softmax\n";
             float[] soft = softmax(flatAction);
-            errorString += "Finished Softmax\n";
+            //errorString += "Finished Softmax\n";
             agentAction = multinomial(soft);
-            errorString += "Finished Multinomial\n";
-            errorString += String.format("Agent action is %d\n", agentAction);
+            //errorString += "Finished Multinomial\n";
+            //errorString += String.format("Agent action is %d\n", agentAction);
             System.out.println("Finished parsing output");
+        } catch (AssertionError ae)
+        {
+            System.out.println("Assertion Error: " + ae.getMessage());
         } catch(Exception e)
         {
             //e.printStackTrace();
-            System.out.println(errorString);
+            //System.out.println(errorString);
             System.out.println("Error while parsing model output: " + e.getMessage());
         }
         try{
