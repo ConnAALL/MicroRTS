@@ -271,7 +271,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     trainUnit(player, "Ranged", pgs);
                     break;
                 case 11: // expand to nearest base that is (1. further than 5 tiles from current base) (2. has resource within 3 tiles)
-                    coords = findExpansionLocation(pgs, 5);
+                    coords = findExpansionLocation(player, pgs, 5);
                     if (coords != null)
                     {
                         for(Unit u : workerTable.keySet())
@@ -285,7 +285,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     }
                     break;
                 case 12: // build barrack near a random base (1. within 5 tiles of an existing base) (2. at least 3 tiles away from existing resources)
-                    coords = findBarrackLocation(pgs, 5);
+                    coords = findBarrackLocation(player, pgs, 5);
                     if (coords != null)
                     {
                         for(Unit u : workerTable.keySet())
@@ -456,10 +456,10 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         return false;
     }
     
-    private int[] findBarrackLocation(PhysicalGameState pgs, int range) {
+    private int[] findBarrackLocation(final int player, PhysicalGameState pgs, int range) {
         try{
             for (Unit u : pgs.getUnits()) {
-                if(u.getType().isStockpile)
+                if(u.getPlayer() == player && u.getType().isStockpile)
                 {
                     int ux = u.getX();
                     int uy = u.getY();
@@ -473,17 +473,18 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                 }
             }
             return null; // No valid expansion found
-        } catch (IndexOutOfBoundsException e)
+        } catch (Exception e)
         {
-            System.out.println("Index out of range while searching for barrack building position");
+            e.printStackTrace();
+            System.out.println("Error while calculating Barracks position: " + e.getMessage());
         }
         return null;
     }
 
-    private int[] findExpansionLocation(PhysicalGameState pgs, int range) {
+    private int[] findExpansionLocation(final int player, PhysicalGameState pgs, int range) {
         try {
             for (Unit u : pgs.getUnits()) {
-                if (u.getType().isStockpile) {
+                if (u.getPlayer() == player && u.getType().isStockpile) {
                     int ux = u.getX();
                     int uy = u.getY();
                     for (int i = Math.max(0, ux - range); i < Math.min(pgs.getWidth() - 1, ux + range); i++) {
