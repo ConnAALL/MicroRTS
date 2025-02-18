@@ -45,6 +45,8 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         utt = a_utt;
         maxAttackRadius = utt.getMaxAttackRange() * 2 + 1;
         useSimple = _useSimple;
+        workerTable = new HashMap<Unit, Boolean>();
+        attackerTable = new HashMap<Unit, Boolean>();
     }
 
     @Override
