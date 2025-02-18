@@ -274,12 +274,14 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     coords = findExpansionLocation(player, pgs, 5);
                     if (coords != null)
                     {
+                        UnitType ut = utt.getUnitType("Base");
+                        System.out.println("Got unit type Base");
                         for(Unit u : workerTable.keySet())
                         {
-                            UnitType ut = utt.getUnitType("Base");
                             if(u.getType().produces.contains(ut) && !isBuilding(u,gs)) // make sure the unit is not already building something
                             {
                                 build(u, ut, coords[0], coords[1]);
+                                break;
                             }
                         }
                     }
@@ -288,12 +290,13 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     coords = findBarrackLocation(player, pgs, 5);
                     if (coords != null)
                     {
-                        for(Unit u : workerTable.keySet())
-                        {
-                            UnitType ut = utt.getUnitType("Barracks");
-                            if(u.getType().produces.contains(ut) && !isBuilding(u,gs)) // make sure the unit is not already building something
+                        UnitType ut = utt.getUnitType("Barracks");
+                        System.out.println("Got unit type Barracks");
+                        for (Unit u : workerTable.keySet()) {
+                            if (u.getType().produces.contains(ut) && !isBuilding(u, gs)) // make sure the unit is not already building something
                             {
-                                build(u, ut, coords[0], coords[1]); 
+                                build(u, ut, coords[0], coords[1]);
+                                break;
                             }
                         }
                     }
@@ -506,7 +509,10 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
     
     private boolean isBuilding(Unit u, GameState gs)
     {
-        return gs.getActionAssignment(u).action.getType() == UnitAction.TYPE_PRODUCE;
+        UnitActionAssignment uaa = gs.getActionAssignment(u);
+        if (uaa == null)
+            return false;
+        else return gs.getActionAssignment(u).action.getType() == UnitAction.TYPE_PRODUCE;
     }
 
     @Override
