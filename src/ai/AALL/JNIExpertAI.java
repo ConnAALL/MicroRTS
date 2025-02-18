@@ -153,8 +153,8 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     int x = pos / pgs.getWidth();
                     int y = pos % pgs.getHeight();
                     int unitPos = u.getPosition(pgs);
-                    int ux = unitPos / pgs.getWidth();
-                    int uy = unitPos % pgs.getHeight();
+                    //int ux = unitPos / pgs.getWidth();
+                    //int uy = unitPos % pgs.getHeight();
 
                     //if (Math.sqrt((float) ((ux - x) ^ 2 + (uy - y) ^ 2)) < maxAttackRadius) // Check if selected tile is close enough to the unit
 
@@ -193,7 +193,10 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             flatAction = action[0];
             assert action.length == 1 : "Model action vector height must be 1";
             assert flatAction.length == 13 : "Model action vector does not match action count";
-            agentAction = multinomial(softmax(flatAction));
+            float[] soft = softmax(flatAction);
+            System.out.println( "Finished Softmax");
+            agentAction = multinomial(soft);
+            System.out.println( "Finished Multinomial");
             //System.out.println(String.format("Agent action is %d", agentAction));
         } catch(Exception e)
         {
