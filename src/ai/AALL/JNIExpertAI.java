@@ -45,8 +45,6 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         utt = a_utt;
         maxAttackRadius = utt.getMaxAttackRange() * 2 + 1;
         useSimple = _useSimple;
-        workerTable = new HashMap<Unit, Boolean>();
-        attackerTable = new HashMap<Unit, Boolean>();
     }
 
     @Override
@@ -182,13 +180,11 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         int agentAction = 0;
         List<Map.Entry<Unit, Boolean>> unitList;
         int[] coords;
-        System.out.println("before registering units");
         for (Unit u : pgs.getUnits()) {
             if (u.getPlayer() == player) {
                 registerNewUnit(u);
             }
         }
-        System.out.println("after registering units");
         try {
             flatAction = action[0];
             assert action.length == 1 : "Model action vector height must be 1";
@@ -286,8 +282,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             //Attackers auto attacking around them
             for(Unit u : attackerTable.keySet())
             {
-                Boolean ab = workerTable.get(u);
-                if(ab != null && ab && gs.getActionAssignment(u) == null)
+                if(gs.getActionAssignment(u) == null)
                 {
                     int minRange = Math.max(2, u.getAttackRange());
                     Collection<Unit> inRange = pgs.getUnitsAround(u.getX(), u.getY(), minRange);
@@ -580,6 +575,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
     public void reset() {
         // TODO Auto-generated method stub
         workerTable = new HashMap<Unit, Boolean>(30);
+        attackerTable = new HashMap<Unit, Boolean>(30);
     }
 
     @Override
