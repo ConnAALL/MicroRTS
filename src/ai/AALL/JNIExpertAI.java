@@ -121,7 +121,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         float[] logits = new float[intlogits.length];
 
         for (int i = 0; i < intlogits.length; i++) {
-            logits[i] = intlogits[i] / 10000.0f; // Convert to float and divide
+            logits[i] = intlogits[i] / 100000000.0f; // Convert to float and divide
         }
 
         Random random = new Random();
