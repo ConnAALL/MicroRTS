@@ -115,6 +115,30 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         return scaled;
     }
 
+    private int multinomial(final int[] intlogits) throws RuntimeException
+    {
+        assert intlogits.length != 0 : "logits can not be 0";
+        float[] logits = new float[intlogits.length];
+
+        for (int i = 0; i < intlogits.length; i++) {
+            logits[i] = intlogits[i] / 10000.0f; // Convert to float and divide
+        }
+
+        Random random = new Random();
+        float r = random.nextFloat(); // Random number in [0, 1)
+        float cumulativeSum = 0.0f;
+        for (int i = 0; i < logits.length; i++) {
+            cumulativeSum += logits[i];
+            //System.out.println(String.format("\tAdding %f", logits[i]));
+            if (r < cumulativeSum) {
+                return i;
+            }
+        }
+        //throw new RuntimeException(String.format("Sum is only %f", cumulativeSum));
+        //System.out.println();
+        return logits.length - 1; //probably floating point error...
+    }
+
     private int multinomial(final float[] logits) throws RuntimeException
     {
         assert logits.length != 0 : "logits can not be 0";
@@ -223,16 +247,8 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             {
                 throw new Exception(String.format("Model action vector does not match action count (%d != 13)", flatAction.length));
             }
-            //assert action.length == 1 : "Model action vector height must be 1";
-            
-            //assert flatAction.length == 13 : "Model action vector does not match action count";
-            //errorString += "Started Softmax\n";
-            float[] soft = softmax(flatAction);
-            //errorString += "Finished Softmax\n";
-            agentAction = multinomial(soft);
-            //errorString += "Finished Multinomial\n";
-            //errorString += String.format("Agent action is %d\n", agentAction);
-            //System.out.println("Finished parsing output");
+            //float[] soft = softmax(flatAction);
+            agentAction = multinomial(flatAction);
         } catch (AssertionError ae)
         {
             System.out.println("Assertion Error: " + ae.getMessage());
