@@ -118,7 +118,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
     private int multinomial(final int[] intlogits) throws RuntimeException
     {
         assert intlogits.length != 0 : "logits can not be 0";
-        float[] logits = new float[intlogits.length];
+        double[] logits = new double[intlogits.length];
 
         for (int i = 0; i < intlogits.length; i++) {
             logits[i] = intlogits[i] / 100000000.0f; // Convert to float and divide
@@ -126,7 +126,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
 
         Random random = new Random();
         float r = random.nextFloat(); // Random number in [0, 1)
-        float cumulativeSum = 0.0f;
+        double cumulativeSum = 0.0f;
         for (int i = 0; i < logits.length; i++) {
             cumulativeSum += logits[i];
             //System.out.println(String.format("\tAdding %f", logits[i]));
