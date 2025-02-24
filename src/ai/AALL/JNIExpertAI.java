@@ -11,19 +11,13 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.lang.Math;
 import ai.core.AI;
-import ai.core.AIWithComputationBudget;
 import ai.core.ParameterSpecification;
 import ai.abstraction.AbstractionLayerAI;
 import ai.abstraction.pathfinding.AStarPathFinding;
 import ai.evaluation.SimpleEvaluationFunction;
-import ai.jni.JNIInterface;
-import ai.units.NetworkHelpers;
-import ai.units.NetworkOuput;
-import ai.units.PerUnitAI;
 import rts.GameState;
 import rts.PhysicalGameState;
 import rts.PlayerAction;
-import rts.ResourceUsage;
 import rts.UnitAction;
 import rts.UnitActionAssignment;
 import rts.units.Unit;
@@ -249,47 +243,47 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIExpertInterfac
     {
         Player p = pgs.getPlayer(player);
         int resource = p.getResources();
-        int[] rawOutputs = new int[13];
-        Arrays.fill(rawOutputs,1);
+        int[] mask = new int[13];
+        Arrays.fill(mask,0);
         boolean foundBase = BaseExists(pgs, player);
         boolean foundBarrack = BarracksExists(pgs, player);
-        if(this.workerTable.keySet().size() == 0) // no owned workers
+        if(workerTable.keySet().size() != 0)
         {
-            rawOutputs[1] = 0;
-            rawOutputs[2] = 0;
+            mask[1] = 1;
+            mask[2] = 1;
         }
-        if(this.attackerTable.keySet().size() == 0) // no attackers to send to quad
+        if(attackerTable.keySet().size() != 0)
         {
-            rawOutputs[3] = 0;
-            rawOutputs[4] = 0;
-            rawOutputs[5] = 0;
-            rawOutputs[6] = 0;
+            mask[3] = 1;
+            mask[4] = 1;
+            mask[5] = 1;
+            mask[6] = 1;
         }
-        if((resource - utt.getUnitType("Worker").cost)<0 && !foundBase)
+        if((resource - utt.getUnitType("Worker").cost)>=0 && foundBase)
         {
-            rawOutputs[7] = 0;
+            mask[7] = 1;
         }
-        if((resource - utt.getUnitType("Light").cost)<0 && !foundBarrack)
+        if((resource - utt.getUnitType("Light").cost)>=0 && foundBarrack)
         {
-            rawOutputs[8] = 0;
+            mask[8] = 1;
         }
-        if((resource - utt.getUnitType("Heavy").cost)<0 && !foundBarrack)
+        if((resource - utt.getUnitType("Heavy").cost)>=0 && foundBarrack)
         {
-            rawOutputs[9] = 0;
+            mask[9] = 1;
         }
-        if((resource - utt.getUnitType("Ranged").cost)<0 && !foundBarrack)
+        if((resource - utt.getUnitType("Ranged").cost)>=0 && foundBarrack)
         {
-            rawOutputs[10] = 0;
+            mask[10] = 1;
         }
-        if((resource - utt.getUnitType("Base").cost)<0)
+        if((resource - utt.getUnitType("Base").cost)>=0)
         {
-            rawOutputs[11] = 0;
+            mask[11] = 1;
         }
-        if((resource - utt.getUnitType("Barracks").cost)<0)
+        if((resource - utt.getUnitType("Barracks").cost)>=0)
         {
-            rawOutputs[12] = 0;
+            mask[12] = 1;
         }
-        return rawOutputs;
+        return mask;
     }
     private PlayerAction getActionSimple(final int player, final GameState gs, int[][] action)
     {
