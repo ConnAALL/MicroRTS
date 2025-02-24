@@ -292,7 +292,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIExpertInterfac
             {
                 throw new Exception(String.format("Model action vector does not match action count (%d != 13)", flatAction.length));
             }
-            System.out.println(flatAction);
+            System.out.println(Arrays.toString(flatAction));
             agentAction = multinomial(flatAction);
         } catch (AssertionError ae)
         {
