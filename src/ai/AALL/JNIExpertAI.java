@@ -247,6 +247,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIExpertInterfac
         Arrays.fill(mask,0);
         boolean foundBase = BaseExists(pgs, player);
         boolean foundBarrack = BarracksExists(pgs, player);
+        mask[0] = 1;
         if(workerTable.keySet().size() != 0)
         {
             mask[1] = 1;
