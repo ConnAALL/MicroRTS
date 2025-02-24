@@ -223,12 +223,36 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIExpertInterfac
         }
         System.out.print(msg);
     }
+    private boolean BaseExists(PhysicalGameState pgs, final int player)
+    {
+        for(Unit u : pgs.getUnits())
+        {
+            if(u.getPlayer() == player && u.getType() == utt.getUnitType("Base"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean BarracksExists(PhysicalGameState pgs, final int player)
+    {
+        for(Unit u : pgs.getUnits())
+        {
+            if(u.getPlayer() == player && u.getType() == utt.getUnitType("Barracks"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     public int[] actionMask(PhysicalGameState pgs, final int player)
     {
         Player p = pgs.getPlayer(player);
         int resource = p.getResources();
         int[] rawOutputs = new int[13];
         Arrays.fill(rawOutputs,1);
+        boolean foundBase = BaseExists(pgs, player);
+        boolean foundBarrack = BarracksExists(pgs, player);
         if(this.workerTable.keySet().size() == 0) // no owned workers
         {
             rawOutputs[1] = 0;
@@ -241,19 +265,19 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIExpertInterfac
             rawOutputs[5] = 0;
             rawOutputs[6] = 0;
         }
-        if((resource - utt.getUnitType("Worker").cost)<0)
+        if((resource - utt.getUnitType("Worker").cost)<0 && !foundBase)
         {
             rawOutputs[7] = 0;
         }
-        if((resource - utt.getUnitType("Light").cost)<0)
+        if((resource - utt.getUnitType("Light").cost)<0 && !foundBarrack)
         {
             rawOutputs[8] = 0;
         }
-        if((resource - utt.getUnitType("Heavy").cost)<0)
+        if((resource - utt.getUnitType("Heavy").cost)<0 && !foundBarrack)
         {
             rawOutputs[9] = 0;
         }
-        if((resource - utt.getUnitType("Ranged").cost)<0)
+        if((resource - utt.getUnitType("Ranged").cost)<0 && !foundBarrack)
         {
             rawOutputs[10] = 0;
         }
@@ -275,13 +299,24 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIExpertInterfac
         int agentAction = 0;
         List<Map.Entry<Unit, Boolean>> unitList;
         int[] coords;
+
+        // Update tables: add new units and remove dead units
         for (Unit u : pgs.getUnits()) {
             if (u.getPlayer() == player) {
                 registerNewUnit(u);
             }
         }
-        //String errorString = "";
-        //System.out.println("Began parsing output");
+        List<Unit> unitsToRemove = new ArrayList<>();
+        for (Unit u : workerTable.keySet()) {
+            if (pgs.getUnit(u.getID()) == null) { // unit is dead
+                unitsToRemove.add(u);
+            }
+        }
+        for (Unit u : unitsToRemove) {
+            workerTable.remove(u);
+            attackerTable.remove(u);
+        }
+
         try {
             if (action.length != 1)
             {
