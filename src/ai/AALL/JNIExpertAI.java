@@ -304,6 +304,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             // These actions override previous action unless it's a building action
             switch (agentAction) {
                 case 0: // do nothing
+                    System.out.println("Doing Nothing");
                     break;
                 case 1: // allocate 1 worker unit to resource gathering. The worker set to resource gathering does not take attack orders
                     unitList = new ArrayList<>(workerTable.entrySet());
@@ -315,40 +316,50 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                             break;
                         }
                     }
+                    System.out.println("Allocated 1 worker to resource gathering");
                     break; // no units can be set as worker
                 case 2: // deallocate all workers from resource gathering. (Worker pull)
                     for (Unit entry : workerTable.keySet()) {
                         registerToTables(entry, false);
                     }
+                    System.out.println("Pulling workers");
                     break;
                 // attack commands sends all units that arent resource gathers to a random position within the specified quadrant
                 case 3: // attack quadrant 1 -> on default map this is the base territory
                     unitList = new ArrayList<>(attackerTable.entrySet());
                     attackersToQuad(1, pgs, unitList);
+                    System.out.println("Sent Attackers to Quadrant 1");
                     break;
                 case 4: // attack quadrant 2 
                     unitList = new ArrayList<>(attackerTable.entrySet());
                     attackersToQuad(2, pgs, unitList);
+                    System.out.println("Sent Attackers to Quadrant 2");
                     break;
                 case 5: // attack quadrant 3
                     unitList = new ArrayList<>(attackerTable.entrySet());
                     attackersToQuad(3, pgs, unitList);
+                    System.out.println("Sent Attackers to Quadrant 3");
                     break;
                 case 6: // attack quadrant 4 -> on default map this is the enemy base
                     unitList = new ArrayList<>(attackerTable.entrySet());
                     attackersToQuad(4, pgs, unitList);
+                    System.out.println("Sent Attackers to Quadrant 4");
                     break;
                 case 7: // build worker from random base
                     trainUnit(player, "Worker", pgs);
+                    System.out.println("Trained Worker");
                     break;
                 case 8: // build light from random barrack
                     trainUnit(player, "Light", pgs);
+                    System.out.println("Trained Light");
                     break;
                 case 9: // build heavy from random barrack
                     trainUnit(player, "Heavy", pgs);
+                    System.out.println("Trained Heavy");
                     break;
                 case 10: // build ranged from random barrack
                     trainUnit(player, "Ranged", pgs);
+                    System.out.println("Trained Ranged");
                     break;
                 case 11: // expand to nearest base that is (1. further than 5 tiles from current base) (2. has resource within 3 tiles)
                     coords = findExpansionLocation(player, pgs, 5);
@@ -365,6 +376,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                             }
                         }
                     }
+                    System.out.println("Built Base");
                     break;
                 case 12: // build barrack near a random base (1. within 5 tiles of an existing base) (2. at least 3 tiles away from existing resources)
                     coords = findBarrackLocation(player, pgs, 5);
@@ -380,6 +392,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                             }
                         }
                     }
+                    System.out.println("Built Barrack");
                     break;
             }
         } catch(Exception e)
@@ -406,7 +419,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
                     int minRange = Math.max(2, u.getAttackRange());
                     Collection<Unit> inRange = pgs.getUnitsAround(u.getX(), u.getY(), minRange);
                     for (Unit uu : inRange) {
-                        if (uu.getPlayer() != player) {
+                        if (uu.getPlayer() != player && !uu.getType().isResource) {
                             attack(u, uu);
                         }
                     }
