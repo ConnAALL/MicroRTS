@@ -30,7 +30,7 @@ import rts.units.Unit;
 import rts.units.UnitType;
 import rts.units.UnitTypeTable;
 import rts.Player;
-public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
+public class JNIExpertAI extends AbstractionLayerAI implements JNIExpertInterface{
     UnitTypeTable utt = null;
     double reward = 0.0;
     double oldReward = 0.0;
@@ -223,10 +223,12 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         }
         System.out.print(msg);
     }
-    private void maskActions(PhysicalGameState pgs, final int player, int[] rawOutputs)
+    public int[] actionMask(PhysicalGameState pgs, final int player)
     {
         Player p = pgs.getPlayer(player);
         int resource = p.getResources();
+        int[] rawOutputs = new int[13];
+        Arrays.fill(rawOutputs,1);
         if(this.workerTable.keySet().size() == 0) // no owned workers
         {
             rawOutputs[1] = 0;
@@ -263,6 +265,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         {
             rawOutputs[12] = 0;
         }
+        return rawOutputs;
     }
     private PlayerAction getActionSimple(final int player, final GameState gs, int[][] action)
     {
@@ -289,7 +292,6 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             {
                 throw new Exception(String.format("Model action vector does not match action count (%d != 13)", flatAction.length));
             }
-            maskActions(pgs, player, flatAction);
             System.out.println(flatAction);
             agentAction = multinomial(flatAction);
         } catch (AssertionError ae)

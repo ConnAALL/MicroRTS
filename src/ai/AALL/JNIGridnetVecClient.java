@@ -71,7 +71,7 @@ public class JNIGridnetVecClient {
     //		31: can we attack relative position at ...?					|-- (maxAttackRange)^2 relative attack locations
     //		...: ...													|
     // ]
-    int[][][][] masks;
+    int[][] masks;
     
     int[][][][] observation;
     double[][] reward;
@@ -130,7 +130,7 @@ public class JNIGridnetVecClient {
         int s2 = r.observation.length; 
         int s3 = r.observation[0].length;
         int s4 = r.observation[0][0].length;
-        masks = new int[s1][][][];
+        masks = new int[s1][];
         observation = new int[s1][s2][s3][s4];
         reward = new double[s1][rfs.length];
         done = new boolean[s1][rfs.length];
@@ -314,7 +314,7 @@ public class JNIGridnetVecClient {
      * 	the given player.
      * @throws Exception
      */
-    public int[][][][] getMasks(int player) throws Exception {
+    public int[][] getMasks(int player) throws Exception {
         for (int i = 0; i < selfPlayClients.length; i++) {
             masks[i*2] = selfPlayClients[i].getMasks(0);
             masks[i*2+1] = selfPlayClients[i].getMasks(1);

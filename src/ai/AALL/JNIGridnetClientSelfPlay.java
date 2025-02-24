@@ -47,7 +47,7 @@ public class JNIGridnetClientSelfPlay {
 
     // Internal State
     PhysicalGameStateJFrame w;
-    public JNIInterface[] ais = new JNIInterface[2];	// These AIs won't actually play: just convert action formats for us
+    public JNIExpertInterface[] ais = new JNIExpertInterface[2];	// These AIs won't actually play: just convert action formats for us
     public PhysicalGameState pgs;
     public GameState gs;
     public GameState[] playergs = new GameState[2];
@@ -193,19 +193,8 @@ public class JNIGridnetClientSelfPlay {
      * @return Legal actions mask for given player.
      * @throws Exception
      */
-    public int[][][] getMasks(int player) throws Exception {
-        for (int i = 0; i < masks[0].length; i++) {
-            for (int j = 0; j < masks[0][0].length; j++) {
-            	Arrays.fill(masks[player][i][j], 0);
-            }
-        }
-        for (Unit u: pgs.getUnits()) {
-            if (u.getPlayer() == player && gs.getActionAssignment(u) == null) {
-                masks[player][u.getY()][u.getX()][0] = 1;
-                UnitAction.getValidActionArray(u, gs, utt, masks[player][u.getY()][u.getX()], maxAttackRadius, 1);
-            }
-        }
-        return masks[player];
+    public int[] getMasks(int player) throws Exception {
+        return ais[player].actionMask(gs.getPhysicalGameState(),player);
     }
 
     /**

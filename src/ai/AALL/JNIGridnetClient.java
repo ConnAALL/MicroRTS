@@ -53,7 +53,7 @@ public class JNIGridnetClient {
     public int renderTheme = PhysicalGameStatePanel.COLORSCHEME_WHITE;
     public int maxAttackRadius;
     PhysicalGameStateJFrame w;
-    public JNIInterface ai1;
+    public JNIExpertInterface ai1;
 
     // Storage
     
@@ -206,21 +206,9 @@ public class JNIGridnetClient {
      * @return Legal actions mask for given player.
      * @throws Exception
      */
-    public int[][][] getMasks(int player) throws Exception {
-        for (int i = 0; i < masks.length; i++) {
-            for (int j = 0; j < masks[0].length; j++) {
-                Arrays.fill(masks[i][j], 0);
-            }
-        }
-        for (Unit u: pgs.getUnits()) {
-            if (u.getPlayer() == player && gs.getActionAssignment(u) == null) {
-                masks[u.getY()][u.getX()][0] = 1;
-                UnitAction.getValidActionArray(u, gs, utt, masks[u.getY()][u.getX()], maxAttackRadius, 1);
-            }
-        }
-        return masks;
+    public int[] getMasks(int player) throws Exception {
+        return ai1.actionMask(gs.getPhysicalGameState(),player);
     }
-
     /**
      * @return String representation (in JSON format) of the Unit Type Table
      * @throws Exception
