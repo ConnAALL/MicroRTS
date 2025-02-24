@@ -29,6 +29,7 @@ import rts.UnitActionAssignment;
 import rts.units.Unit;
 import rts.units.UnitType;
 import rts.units.UnitTypeTable;
+import rts.Player;
 public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
     UnitTypeTable utt = null;
     double reward = 0.0;
@@ -222,6 +223,47 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
         }
         System.out.print(msg);
     }
+    private void maskActions(PhysicalGameState pgs, final int player, int[] rawOutputs)
+    {
+        Player p = pgs.getPlayer(player);
+        int resource = p.getResources();
+        if(this.workerTable.keySet().size() == 0) // no owned workers
+        {
+            rawOutputs[1] = 0;
+            rawOutputs[2] = 0;
+        }
+        if(this.attackerTable.keySet().size() == 0) // no attackers to send to quad
+        {
+            rawOutputs[3] = 0;
+            rawOutputs[4] = 0;
+            rawOutputs[5] = 0;
+            rawOutputs[6] = 0;
+        }
+        if((resource - utt.getUnitType("Worker").cost)<0)
+        {
+            rawOutputs[7] = 0;
+        }
+        if((resource - utt.getUnitType("Light").cost)<0)
+        {
+            rawOutputs[8] = 0;
+        }
+        if((resource - utt.getUnitType("Heavy").cost)<0)
+        {
+            rawOutputs[9] = 0;
+        }
+        if((resource - utt.getUnitType("Ranged").cost)<0)
+        {
+            rawOutputs[10] = 0;
+        }
+        if((resource - utt.getUnitType("Base").cost)<0)
+        {
+            rawOutputs[11] = 0;
+        }
+        if((resource - utt.getUnitType("Barracks").cost)<0)
+        {
+            rawOutputs[12] = 0;
+        }
+    }
     private PlayerAction getActionSimple(final int player, final GameState gs, int[][] action)
     {
         //System.out.println("Calculating Simple Action");
@@ -247,7 +289,7 @@ public class JNIExpertAI extends AbstractionLayerAI implements JNIInterface{
             {
                 throw new Exception(String.format("Model action vector does not match action count (%d != 13)", flatAction.length));
             }
-            //float[] soft = softmax(flatAction);
+            maskActions(pgs, player, flatAction);
             agentAction = multinomial(flatAction);
         } catch (AssertionError ae)
         {
